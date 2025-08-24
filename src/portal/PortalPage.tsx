@@ -17,6 +17,11 @@ type NavSectionProps = {
   onItemClick?: (item: NavItem) => void
 }
 
+type RecentExploration = {
+  label: string
+  timestamp: number
+}
+
 function NavSection({ title, items, defaultOpen = false, onItemClick }: NavSectionProps) {
   const [open, setOpen] = useState<boolean>(defaultOpen)
 
@@ -25,7 +30,7 @@ function NavSection({ title, items, defaultOpen = false, onItemClick }: NavSecti
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-3 py-2 text-sm font-semibold text-white hover:bg-white/5 rounded-lg transition pressable"
+        className="w-full flex items-center justify-between px-3 py-2 text-sm font-semibold text-brand-accent hover:bg-white/5 rounded-lg transition pressable"
         aria-expanded={open}
         aria-controls={`section-${title.replace(/\s+/g, '-')}`}
       >
@@ -401,12 +406,29 @@ export function PortalPage() {
   const menuRef = useRef<HTMLDivElement | null>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false)
   const [isLeaving, setIsLeaving] = useState<boolean>(false)
+  const [recentExplorations, setRecentExplorations] = useState<RecentExploration[]>(() => {
+    try {
+      const raw = localStorage.getItem('portal:recentExplorations')
+      if (!raw) return []
+      const parsed = JSON.parse(raw) as RecentExploration[]
+      if (!Array.isArray(parsed)) return []
+      return parsed.slice(0, 3)
+    } catch {
+      return []
+    }
+  })
 
   useEffect(() => {
     try {
       localStorage.setItem('portal:sidebarCollapsed', sidebarCollapsed ? '1' : '0')
     } catch {}
   }, [sidebarCollapsed])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('portal:recentExplorations', JSON.stringify(recentExplorations.slice(0, 3)))
+    } catch {}
+  }, [recentExplorations])
 
   // Removed isMobile viewport tracking; not needed for current sidebar UI
 
@@ -567,6 +589,14 @@ export function PortalPage() {
 
   function handleSolaraItemClick(item: NavItem) {
     const label = typeof item === 'string' ? item : item.label
+    // Track recent exploration
+    setRecentExplorations((prev) => {
+      const next = [{ label: `Solara > ${label}`, timestamp: Date.now() }, ...prev]
+        .filter((v, idx, arr) => idx === arr.findIndex((x) => x.label === v.label))
+        .slice(0, 3)
+      try { localStorage.setItem('portal:recentExplorations', JSON.stringify(next)) } catch {}
+      return next
+    })
     if (label === 'Polaris') {
       startPageLeaveAndRedirect('https://polaris.smartslate.io')
     }
@@ -622,31 +652,55 @@ export function PortalPage() {
             </div>
           ) : (
             <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-3">
-              <NavSection title="Ignite" items={["Explore Learning", "My Learning"]} defaultOpen />
-              <NavSection title="Strategic Skills Architecture" items={["Explore Partnership", "My Architecture"]} defaultOpen />
+              <NavSection
+                title="Ignite"
+                items={["Explore Learning", "My Learning"]}
+                defaultOpen
+                onItemClick={(item) => {
+                  const label = typeof item === 'string' ? item : item.label
+                  setRecentExplorations((prev) => {
+                    const next = [{ label: `Ignite > ${label}`, timestamp: Date.now() }, ...prev]
+                      .filter((v, idx, arr) => idx === arr.findIndex((x) => x.label === v.label))
+                      .slice(0, 3)
+                    try { localStorage.setItem('portal:recentExplorations', JSON.stringify(next)) } catch {}
+                    return next
+                  })
+                }}
+              />
+              <NavSection
+                title="Strategic Skills Architecture"
+                items={["Explore Partnership", "My Architecture"]}
+                defaultOpen
+                onItemClick={(item) => {
+                  const label = typeof item === 'string' ? item : item.label
+                  setRecentExplorations((prev) => {
+                    const next = [{ label: `Strategic Skills Architecture > ${label}`, timestamp: Date.now() }, ...prev]
+                      .filter((v, idx, arr) => idx === arr.findIndex((x) => x.label === v.label))
+                      .slice(0, 3)
+                    try { localStorage.setItem('portal:recentExplorations', JSON.stringify(next)) } catch {}
+                    return next
+                  })
+                }}
+              />
               <NavSection title="Solara" items={solaraItems} defaultOpen onItemClick={handleSolaraItemClick} />
               {/* Recent Explorations */}
               <div className="mt-4 pt-3 border-t border-white/10">
-                <div className="px-3 py-1.5 text-sm font-heading font-bold text-white/60">Recent Explorations</div>
+                <div className="px-3 py-1.5 text-sm font-heading font-bold text-brand-accent">Recent Explorations</div>
                 <ul className="space-y-0.5">
-                  {[{ name: 'Test', date: '8/24/2025' }, { name: 'Test', date: '8/24/2025' }].map((c) => (
-                    <li key={`${c.name}-${c.date}`}>
-                      <a
-                        href="#"
-                        className="flex items-center justify-between px-3 py-1.5 text-sm text-white/75 hover:text-primary-500 hover:bg-primary-500/5 rounded-lg transition pressable"
-                      >
-                        <span className="truncate">{c.name}</span>
-                        <span className="ml-3 shrink-0 text-[11px] text-white/45">{c.date}</span>
-                      </a>
+                  {recentExplorations.map((c, idx) => (
+                    <li key={`${c.label}-${c.timestamp}-${idx}`}>
+                      <div className="flex items-start justify-between gap-2 px-3 py-1.5 text-sm text-white/75 rounded-lg">
+                        <span className="flex-1 min-w-0 whitespace-normal break-words">{c.label}</span>
+                        <span className="ml-3 shrink-0 text-[11px] text-white/45">{new Date(c.timestamp).toLocaleDateString()}</span>
+                      </div>
                     </li>
                   ))}
+                  {recentExplorations.length === 0 && (
+                    <li>
+                      <div className="px-3 py-1.5 text-[12px] text-white/50">No recent items yet</div>
+                    </li>
+                  )}
                 </ul>
-                <a
-                  href="https://constellation.smartslate.io"
-                  className="block px-3 py-2 mt-1 text-[13px] text-primary-400 hover:text-primary-300"
-                >
-                  View all constellations →
-                </a>
               </div>
             </nav>
           )}
