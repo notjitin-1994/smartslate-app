@@ -1,8 +1,8 @@
 export const paths = {
   home: '/',
-  portal: '/portal',
-  portalUser: '/portal/:user',
-  settings: '/portal/settings',
+  portal: '/stargate',
+  portalUser: '/stargate/:user',
+  settings: '/stargate/settings',
   publicProfile: '/:username',
 } as const
 

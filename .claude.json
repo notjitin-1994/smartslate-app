@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "deep-graph": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-code-graph@latest",
+        "notjitin-1994/smartslate-app"
+      ]
+    }
+  }
+}

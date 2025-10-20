@@ -7,6 +7,8 @@ type Props = {
   placeholder?: string
   autoComplete?: string
   name?: string
+  onFocus?: () => void
+  onBlur?: () => void
 }
 
 function IconEye({ className = '' }: { className?: string }) {
@@ -29,7 +31,7 @@ function IconEyeOff({ className = '' }: { className?: string }) {
   )
 }
 
-export function PasswordInput({ label, value, onChange, placeholder, autoComplete, name }: Props) {
+export function PasswordInput({ label, value, onChange, placeholder, autoComplete, name, onFocus, onBlur }: Props) {
   const [visible, setVisible] = useState(false)
 
   return (
@@ -42,6 +44,8 @@ export function PasswordInput({ label, value, onChange, placeholder, autoComplet
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onFocus={onFocus}
+          onBlur={onBlur}
           autoComplete={autoComplete}
           name={name}
         />

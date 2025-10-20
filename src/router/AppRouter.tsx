@@ -29,7 +29,9 @@ export function AppRouter() {
           <Route path={paths.home} element={<AuthLanding />} />
           {/* Alias /login to home for external redirects */}
           <Route path="/login" element={<Navigate to={paths.home} replace />} />
-          
+          {/* Alias /signup to home - auth mode handled by AuthPage */}
+          <Route path="/signup" element={<Navigate to={paths.home} replace />} />
+
           {/* Protected routes */}
           <Route path={paths.portal} element={
             <RequireAuth>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ComponentType } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import settingsGearUrl from '../../images/icons/gear.png'
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
 import type { User } from '@supabase/supabase-js'
@@ -13,7 +13,6 @@ type NavItem = string | { label: string; tagText?: string; tagTone?: 'preview' |
 type NavSectionProps = {
   title: string
   items: NavItem[]
-  defaultOpen?: boolean
   onItemClick?: (item: NavItem) => void
 }
 
@@ -22,50 +21,45 @@ type RecentExploration = {
   timestamp: number
 }
 
-function NavSection({ title, items, defaultOpen = false, onItemClick }: NavSectionProps) {
-  const [open, setOpen] = useState<boolean>(defaultOpen)
+function NavSection({ title, items, onItemClick }: NavSectionProps) {
 
   return (
-    <div className="select-none">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-3 py-2 text-sm font-semibold text-brand-accent hover:bg-white/5 rounded-lg transition pressable"
-        aria-expanded={open}
-        aria-controls={`section-${title.replace(/\s+/g, '-')}`}
-      >
-        <span>{title}</span>
-        <span className={`inline-block text-xs text-white/70 transition-transform ${open ? 'rotate-90' : ''}`}>▶</span>
-      </button>
-      <div id={`section-${title.replace(/\s+/g, '-')}`} className={`${open ? 'block' : 'hidden'} mt-1 pl-2`}>
-        <ul className="space-y-0.5">
-          {items.map((item) => {
-            const { label, tagText, tagTone } =
-              typeof item === 'string' ? { label: item } : item
-            return (
-              <li key={label}>
-                <a
-                  href="#"
-                  onClick={(e) => { e.preventDefault(); onItemClick?.(item) }}
-                  className="flex items-center justify-between px-3 py-1.5 text-sm text-white/75 hover:text-primary-500 focus-visible:text-primary-500 active:text-primary-500 hover:bg-primary-500/5 rounded-lg transition pressable"
+    <div className="space-y-1.5">
+      <h2 className="text-primary mb-2 px-3 text-[11px] font-bold tracking-wider uppercase">
+        {title}
+      </h2>
+      <div className="space-y-0.5">
+        {items.map((item) => {
+          const { label, tagText, tagTone } =
+            typeof item === 'string' ? { label: item } : item
+          const isDisabled = tagTone === 'info' || tagTone === 'soon'
+          return (
+            <button
+              key={label}
+              type="button"
+              onClick={(e) => { e.preventDefault(); !isDisabled && onItemClick?.(item) }}
+              disabled={isDisabled}
+              className={`group focus-visible:ring-secondary/50 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                isDisabled
+                  ? 'text-text-disabled cursor-not-allowed'
+                  : 'text-text-secondary hover:text-foreground hover:bg-foreground/5 active:scale-[0.98]'
+              }`}
+            >
+              <span className="flex-1 truncate text-left">{label}</span>
+              {tagText && (
+                <span
+                  className={`inline-flex shrink-0 items-center rounded-full border px-2.5 py-0.5 text-[10px] font-semibold tracking-wide uppercase transition-all duration-200 ${
+                    tagTone === 'preview'
+                      ? 'border-primary/40 bg-primary/10 text-primary shadow-primary/20 shadow'
+                      : 'text-text-disabled border-neutral-300 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800'
+                  }`}
                 >
-                  <span className="truncate">{label}</span>
-                  {tagText && (
-                    <span
-                      className={`ml-3 shrink-0 inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium ${
-                        tagTone === 'preview'
-                          ? 'border-primary-600/30 text-primary-400 bg-primary-600/10'
-                          : 'border-white/10 text-white/60 bg-white/5'
-                      }`}
-                    >
-                      {tagText}
-                    </span>
-                  )}
-                </a>
-              </li>
-            )
-          })}
-        </ul>
+                  {tagText}
+                </span>
+              )}
+            </button>
+          )
+        })}
       </div>
     </div>
   )
@@ -127,48 +121,6 @@ function UserAvatar({ user, sizeClass, textClass = 'text-sm font-semibold text-w
   )
 }
 
-type WorkspaceActionCardProps = {
-  href: string
-  label: string
-  description?: string
-  icon: ComponentType<{ className?: string }>
-}
-
-function WorkspaceActionCard({ href, label, description, icon: Icon }: WorkspaceActionCardProps) {
-  function onMouseMove(e: React.MouseEvent<HTMLAnchorElement>) {
-    const target = e.currentTarget as HTMLAnchorElement
-    const rect = target.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    target.style.setProperty('--x', `${x}px`)
-    target.style.setProperty('--y', `${y}px`)
-  }
-
-  return (
-    <a
-      href={href}
-      aria-label={label}
-      onMouseMove={onMouseMove}
-      className="group relative block h-full overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 transition-transform duration-300 hover:-translate-y-0.5 pressable elevate animate-fade-in-up"
-    >
-      <div className="interactive-spotlight" aria-hidden="true" />
-      <div className="relative p-5 sm:p-6 h-full grid grid-cols-[auto,1fr,auto] items-center gap-4">
-        <span className="inline-flex items-center justify-center h-11 w-11 rounded-xl border border-white/10 bg-white/5 text-white/85 group-hover:text-primary-400 transition-colors">
-          <Icon className="h-5 w-5" />
-        </span>
-        <div className="min-w-0">
-          <div className="text-base font-semibold text-white/95">{label}</div>
-          {description && (
-            <p className="mt-0.5 text-xs text-white/60 line-clamp-3">{description}</p>
-          )}
-        </div>
-        <span className="opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition will-change-transform text-white/70 group-hover:text-primary-400">
-          <IconArrowRight className="h-5 w-5" />
-        </span>
-      </div>
-    </a>
-  )
-}
 
 function Brand() {
   return (
@@ -197,66 +149,8 @@ function SidebarToggleIcon({ className = '' }: { className?: string }) {
   )
 }
 
-function IconWrench({ className = '' }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M21 6.5a5 5 0 0 1-6.8 4.7L7.8 17.6a2 2 0 1 1-2.8-2.8l6.4-6.4A5 5 0 1 1 21 6.5z" />
-      <circle cx="4.5" cy="19.5" r="1.5" />
-    </svg>
-  )
-}
 
-function IconBookOpen({ className = '' }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M12 5.5c-2.8-1.9-6.3-1.9-9 0v12c2.7-1.9 6.2-1.9 9 0" />
-      <path d="M12 5.5c2.8-1.9 6.3-1.9 9 0v12c-2.7-1.9-6.2-1.9-9 0" />
-      <path d="M12 5.5v12" />
-    </svg>
-  )
-}
 
-function IconChart({ className = '' }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M3.5 20.5h17" />
-      <path d="M6.5 16.5v-4" />
-      <path d="M11.5 16.5v-7" />
-      <path d="M16.5 16.5v-2" />
-      <path d="M5 11l3-3 3 3 5-5 3 3" />
-    </svg>
-  )
-}
 
 function IconArrowRight({ className = '' }: { className?: string }) {
   return (
@@ -395,7 +289,7 @@ export function PortalPage() {
   const [toast, setToast] = useState<{ id: number; kind: 'success' | 'error'; message: string } | null>(null)
   const [copySuccess, setCopySuccess] = useState<boolean>(false)
   
-  useDocumentTitle(isSettings ? 'Smartslate | Settings' : (viewingProfile ? 'Smartslate | My Profile' : 'Smartslate | Portal'))
+  useDocumentTitle(isSettings ? 'Smartslate | Settings' : (viewingProfile ? 'Smartslate | My Profile' : 'Smartslate | Stargate'))
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
     if (typeof window === 'undefined') return true
     const stored = localStorage.getItem('portal:sidebarCollapsed')
@@ -606,7 +500,7 @@ export function PortalPage() {
   }
 
   const collapsedQuickItems = [
-    { title: 'Portal', icon: IconApps },
+    { title: 'Stargate', icon: IconApps },
     { title: 'Explore', icon: IconEye },
     { title: 'Strategic Skills Architecture', icon: IconChecklist },
     { title: 'Solara', icon: IconSun },
@@ -623,17 +517,21 @@ export function PortalPage() {
   return (
     <div className={`h-screen w-full overflow-hidden bg-[rgb(var(--bg))] text-[rgb(var(--text))]${isLeaving ? ' page-leave' : ''}`}>
       <div className="flex h-full">
-        <aside className={`hidden md:flex ${sidebarCollapsed ? 'md:w-16 lg:w-16' : 'md:w-72 lg:w-80'} flex-col border-r border-white/10 bg-slate-900/95 backdrop-blur-xl transition-[width] duration-300 ease-in-out`}>
-          <div className={`px-3 ${sidebarCollapsed ? 'py-2' : 'px-4 py-4'} border-b border-white/10 flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'} gap-2 sticky top-0 z-10`}>
-            {!sidebarCollapsed && <Brand />}
+        <aside className={`hidden md:flex ${sidebarCollapsed ? 'md:w-16 lg:w-16' : 'md:w-72 lg:w-80'} h-full min-h-0 flex-col bg-surface shadow-sm backdrop-blur-xl transition-all duration-300 ease-out`}>
+          <div className={`${sidebarCollapsed ? 'px-2 py-3' : 'px-6 py-5'} flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'} bg-surface/80 sticky top-0 z-20 backdrop-blur-sm`}>
+            {!sidebarCollapsed && (
+              <div className="animate-in fade-in slide-in-from-left-2 duration-300">
+                <Brand />
+              </div>
+            )}
             <button
               type="button"
               onClick={() => setSidebarCollapsed((v) => !v)}
               aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-              className="w-8 h-8 flex items-center justify-center text-white/80 hover:text-white transition pressable"
-              title={sidebarCollapsed ? 'Expand' : 'Collapse'}
+              className={`group text-text-secondary hover:text-foreground hover:bg-foreground/5 active:bg-foreground/10 focus-visible:ring-secondary/50 relative flex items-center justify-center rounded-lg transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 ${sidebarCollapsed ? 'h-8 w-8' : 'h-9 w-9'}`}
+              title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             >
-              <SidebarToggleIcon className="h-5 w-5" />
+              <SidebarToggleIcon className={`h-5 w-5 transition-transform duration-300 ${sidebarCollapsed ? 'rotate-180' : ''}`} />
             </button>
           </div>
           {sidebarCollapsed ? (
@@ -644,18 +542,17 @@ export function PortalPage() {
                   type="button"
                   title={title}
                   aria-label={title}
-                  className="w-10 h-10 rounded-lg text-white/80 hover:text-white flex items-center justify-center transition-transform duration-200 hover:scale-[1.04] pressable"
+                  className="group relative flex h-10 w-10 items-center justify-center rounded-lg text-text-secondary hover:text-foreground hover:bg-foreground/5 transition-all duration-200 active:scale-[0.98]"
                 >
-                  <Icon className="h-5 w-5" />
+                  <Icon className="h-5 w-5 shrink-0" />
                 </button>
               ))}
             </div>
           ) : (
-            <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-3">
+            <nav className="min-h-0 flex-1 space-y-6 overflow-y-auto px-4 py-4" aria-label="Primary navigation">
               <NavSection
                 title="Ignite"
                 items={["Explore Learning", "My Learning"]}
-                defaultOpen
                 onItemClick={(item) => {
                   const label = typeof item === 'string' ? item : item.label
                   setRecentExplorations((prev) => {
@@ -670,7 +567,6 @@ export function PortalPage() {
               <NavSection
                 title="Strategic Skills Architecture"
                 items={["Explore Partnership", "My Architecture"]}
-                defaultOpen
                 onItemClick={(item) => {
                   const label = typeof item === 'string' ? item : item.label
                   setRecentExplorations((prev) => {
@@ -682,37 +578,33 @@ export function PortalPage() {
                   })
                 }}
               />
-              <NavSection title="Solara" items={solaraItems} defaultOpen onItemClick={handleSolaraItemClick} />
+              <NavSection title="Solara" items={solaraItems} onItemClick={handleSolaraItemClick} />
               {/* Recent Explorations */}
               <div className="mt-4 pt-3 border-t border-white/10">
-                <div className="px-3 py-1.5 text-sm font-heading font-bold text-brand-accent">Recent Explorations</div>
-                <ul className="space-y-0.5">
+                <h2 className="text-primary mb-2 px-3 text-[11px] font-bold tracking-wider uppercase">Recent Explorations</h2>
+                <div className="space-y-0.5">
                   {recentExplorations.map((c, idx) => (
-                    <li key={`${c.label}-${c.timestamp}-${idx}`}>
-                      <div className="flex items-start justify-between gap-2 px-3 py-1.5 text-sm text-white/75 rounded-lg">
-                        <span className="flex-1 min-w-0 whitespace-normal break-words">{c.label}</span>
-                        <span className="ml-3 shrink-0 text-[11px] text-white/45">{new Date(c.timestamp).toLocaleDateString()}</span>
-                      </div>
-                    </li>
+                    <div key={`${c.label}-${c.timestamp}-${idx}`} className="flex items-start justify-between gap-2 px-3 py-2 text-sm text-text-secondary rounded-lg">
+                      <span className="flex-1 min-w-0 whitespace-normal break-words">{c.label}</span>
+                      <span className="ml-3 shrink-0 text-[10px] text-text-disabled">{new Date(c.timestamp).toLocaleDateString()}</span>
+                    </div>
                   ))}
                   {recentExplorations.length === 0 && (
-                    <li>
-                      <div className="px-3 py-1.5 text-[12px] text-white/50">No recent items yet</div>
-                    </li>
+                    <div className="px-3 py-2 text-[12px] text-text-disabled">No recent items yet</div>
                   )}
-                </ul>
+                </div>
               </div>
             </nav>
           )}
 
-          <div className="mt-auto w-full">
+          <div className="bg-surface/50 mt-auto w-full flex-shrink-0 backdrop-blur-sm">
             {sidebarCollapsed ? (
-              <div className="px-0 py-3 flex flex-col items-center gap-2">
+              <div className="flex flex-col items-center space-y-2 px-2 py-3">
                 <button
                   type="button"
                   title={`${getCapitalizedFirstName((user?.user_metadata?.first_name as string) || (user?.user_metadata?.name as string) || (user?.user_metadata?.full_name as string) || 'Your')}'s Profile`}
                   onClick={goToProfile}
-                  className="w-10 h-10 rounded-full text-white/85 hover:text-white flex items-center justify-center pressable"
+                  className="group relative flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary hover:text-foreground hover:bg-foreground/5 transition-all duration-200 active:scale-95"
                 >
                   <UserAvatar user={user} sizeClass="w-6 h-6" textClass="text-sm font-semibold" />
                 </button>
@@ -720,7 +612,7 @@ export function PortalPage() {
                   type="button"
                   title="Settings"
                   onClick={() => navigate(paths.settings)}
-                  className="w-10 h-10 rounded-lg text-white/85 hover:text-white flex items-center justify-center pressable"
+                  className="group relative flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary hover:text-foreground hover:bg-foreground/5 transition-all duration-200 active:scale-95"
                 >
                   <SettingsIconImg className="w-5 h-5" />
                 </button>
@@ -728,9 +620,9 @@ export function PortalPage() {
                   type="button"
                   title="Logout"
                   onClick={onLogout}
-                  className="w-10 h-10 rounded-lg text-white/85 hover:text-white flex items-center justify-center pressable"
+                  className="group relative flex h-8 w-8 items-center justify-center rounded-lg bg-red-600 text-white transition-all duration-200 hover:bg-red-700 hover:shadow-red-500/25 focus-visible:ring-2 focus-visible:ring-red-500/50 focus-visible:ring-offset-2 active:scale-95"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                     <path d="M16 17l5-5-5-5" />
                     <path d="M21 12H9" />
@@ -738,47 +630,53 @@ export function PortalPage() {
                 </button>
               </div>
             ) : (
-              <div className="px-3 py-3 space-y-2">
+              <div className="space-y-2 px-4 py-4">
                 <button
                   type="button"
                   onClick={goToProfile}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5 transition pressable"
+                  className="group hover:bg-foreground/5 focus-visible:ring-secondary/50 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.98]"
                   title={`${getCapitalizedFirstName((user?.user_metadata?.first_name as string) || (user?.user_metadata?.name as string) || (user?.user_metadata?.full_name as string) || 'Your')}'s Profile`}
                 >
-                  <UserAvatar user={user} sizeClass="w-5 h-5" />
-                  <span className="text-sm text-white/90 font-medium">
-                    {(() => {
-                      const rawName = (user?.user_metadata?.first_name as string) ||
-                        (user?.user_metadata?.name as string) ||
-                        (user?.user_metadata?.full_name as string) ||
-                        (user?.email as string) ||
-                        'Your'
-                      const first = rawName.toString().trim().split(' ')[0]
-                      return user && first && first !== 'Your' ? `${first}'s Profile` : 'Your Profile'
-                    })()}
-                  </span>
+                  <div className="relative">
+                    <UserAvatar user={user} sizeClass="w-9 h-9" textClass="text-sm font-bold" />
+                    <div className="bg-success border-surface absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2" />
+                  </div>
+                  <div className="min-w-0 flex-1 text-left">
+                    <p className="text-foreground truncate text-sm font-semibold">
+                      {(() => {
+                        const rawName = (user?.user_metadata?.first_name as string) ||
+                          (user?.user_metadata?.name as string) ||
+                          (user?.user_metadata?.full_name as string) ||
+                          (user?.email as string) ||
+                          'Your'
+                        const first = rawName.toString().trim().split(' ')[0]
+                        return user && first && first !== 'Your' ? `${first}'s Profile` : 'Your Profile'
+                      })()}
+                    </p>
+                    <p className="text-text-secondary truncate text-xs">{user?.email}</p>
+                  </div>
                 </button>
                 <button
                   type="button"
                   onClick={() => navigate(paths.settings)}
-                  className="w-full inline-flex items-center gap-2 px-3 py-2 text-sm text-white/85 hover:bg-white/5 rounded-lg transition pressable"
+                  className="group text-text-secondary hover:text-foreground hover:bg-foreground/5 focus-visible:ring-secondary/50 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.98]"
                   title="Settings"
                 >
-                  <SettingsIconImg className="w-5 h-5" />
-                  <span>Settings</span>
+                  <SettingsIconImg className="h-5 w-5 shrink-0" />
+                  <span className="flex-1 text-left">Settings</span>
                 </button>
                 <button
                   type="button"
                   onClick={onLogout}
-                  className="w-full inline-flex items-center gap-2 px-3 py-2 text-sm text-white/85 hover:bg-white/5 rounded-lg transition pressable"
+                  className="group text-text-secondary hover:text-error hover:bg-error/5 focus-visible:ring-error/50 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.98]"
                   title="Logout"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 shrink-0">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                     <path d="M16 17l5-5-5-5" />
                     <path d="M21 12H9" />
                   </svg>
-                  <span>Logout</span>
+                  <span className="flex-1 text-left">Sign Out</span>
                 </button>
               </div>
             )}
@@ -850,16 +748,16 @@ export function PortalPage() {
                         const firstName = rawName.toString().trim().split(' ')[0]
                         return user && firstName ? (
                           <>
-                            <span>Welcome to the Portal, </span>
+                            <span>Welcome to the Stargate, </span>
                             <span className="text-primary-600">{firstName}</span>
                             <span>.</span>
                           </>
                         ) : (
-                          <>Welcome to the Portal.</>
+                          <>Welcome to the Stargate.</>
                         )
                       })()}
                     </h1>
-                    <p className="mt-2 text-sm sm:text-base text-white/70 max-w-3xl animate-fade-in-up animate-delay-150">
+                    <p className="mt-2 text-sm sm:text-base text-white/70 animate-fade-in-up animate-delay-150">
                       Your gateway to explore and connect with the Smartslate ecosystem — discover the home of every product in one place.
                     </p>
                   </>
@@ -927,8 +825,8 @@ export function PortalPage() {
                           type="button" 
                           onClick={() => navigate(paths.portal)} 
                           className="p-2 border border-white/20 text-white/80 hover:text-white hover:border-white/40 rounded-lg transition-colors"
-                          title="Back to Portal"
-                          aria-label="Back to Portal"
+                          title="Back to Stargate"
+                          aria-label="Back to Stargate"
                         >
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -1178,31 +1076,267 @@ export function PortalPage() {
               </div>
             </section>
           ) : (
-            <section className="mx-auto max-w-7xl px-4 py-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="h-40 sm:h-44 md:h-48 animate-fade-in-up">
-                  <WorkspaceActionCard
-                    href="#"
-                    label="Build"
-                    description="Conduct stakeholder analysis, instructional design & generate storyboards, build and deploy courses."
-                    icon={IconWrench}
-                  />
+            <section className="mx-auto max-w-7xl px-4 py-6 pb-20">
+              {/* Quick Stats */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 animate-fade-in-up animate-delay-75">
+                <div className="glass-card p-6 hover:scale-105 transition-transform duration-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-white/60 text-sm">Active Projects</span>
+                    <div className="w-8 h-8 rounded-lg bg-primary-500/20 flex items-center justify-center">
+                      <svg className="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="text-3xl font-bold text-white">3</div>
                 </div>
-                <div className="h-40 sm:h-44 md:h-48 animate-fade-in-up animate-delay-75">
-                  <WorkspaceActionCard
-                    href="#"
-                    label="Learn"
-                    description="Explore docs, courses, and tutorials to level up quickly."
-                    icon={IconBookOpen}
-                  />
+
+                <div className="glass-card p-6 hover:scale-105 transition-transform duration-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-white/60 text-sm">Starmaps Created</span>
+                    <div className="w-8 h-8 rounded-lg bg-secondary-500/20 flex items-center justify-center">
+                      <IconSun className="w-4 h-4 text-secondary-400" />
+                    </div>
+                  </div>
+                  <div className="text-3xl font-bold text-white">12</div>
                 </div>
-                <div className="h-40 sm:h-44 md:h-48 animate-fade-in-up animate-delay-150">
-                  <WorkspaceActionCard
-                    href="#"
-                    label="Insight"
-                    description="Discover analytics and reports to drive better decisions."
-                    icon={IconChart}
-                  />
+
+                <div className="glass-card p-6 hover:scale-105 transition-transform duration-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-white/60 text-sm">Hours Saved</span>
+                    <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
+                      <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="text-3xl font-bold text-white">240</div>
+                </div>
+
+                <div className="glass-card p-6 hover:scale-105 transition-transform duration-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-white/60 text-sm">Team Members</span>
+                    <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                      <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="text-3xl font-bold text-white">5</div>
+                </div>
+              </div>
+
+              {/* Products Dashboard */}
+              <div className="mb-12 animate-fade-in-up animate-delay-150">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold text-white">Your Products</h3>
+                  <span className="text-sm text-white/60">6 products available</span>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Polaris */}
+                  <button
+                    onClick={() => startPageLeaveAndRedirect('https://polaris.smartslate.io')}
+                    className="text-left glass-card p-8 hover:scale-105 transition-all duration-200 group border-2 border-primary-400/20 hover:border-primary-400/40"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg">
+                          <IconSun className="w-8 h-8 text-white" />
+                        </div>
+                        <div>
+                          <h4 className="text-2xl font-bold text-white mb-1">Polaris</h4>
+                          <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-green-500/20 text-green-300 border border-green-500/30">
+                            ● Active
+                          </span>
+                        </div>
+                      </div>
+                      <IconArrowRight className="w-6 h-6 text-white/40 group-hover:text-primary-400 group-hover:translate-x-1 transition-all" />
+                    </div>
+                    <p className="text-white/70 mb-4">
+                      Instantly translate stakeholder needs into actionable learning requirements, ensuring that every course is aligned with business goals from the start.
+                    </p>
+                    <div className="flex items-center gap-4 text-sm text-white/50">
+                      <span>12 Starmaps</span>
+                      <span>•</span>
+                      <span>Last accessed 2h ago</span>
+                    </div>
+                  </button>
+
+                  {/* Constellation */}
+                  <div className="glass-card p-8 border-dashed border-2 border-white/10 opacity-60">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-xl bg-white/5 flex items-center justify-center">
+                          <svg className="w-8 h-8 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="text-2xl font-bold text-white/90 mb-1">Constellation</h4>
+                          <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-white/5 text-white/40 border border-white/10">
+                            Coming Q2 2026
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-white/50 mb-4">
+                      Transform raw content into structured learning blueprints automatically, saving countless hours of manual instructional design work.
+                    </p>
+                    <button className="text-sm text-white/40 hover:text-white/60 transition-colors">
+                      Join waitlist →
+                    </button>
+                  </div>
+
+                  {/* Nova - Coming Soon */}
+                  <div className="glass-card p-8 border-dashed border-2 border-white/10 opacity-60">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-xl bg-white/5 flex items-center justify-center">
+                          <svg className="w-8 h-8 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="text-2xl font-bold text-white/90 mb-1">Nova</h4>
+                          <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-white/5 text-white/40 border border-white/10">
+                            Coming Q2 2026
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-white/50 mb-4">
+                      Build powerful, interactive learning experiences with an AI-assisted authoring tool that makes content creation fast, easy, and engaging.
+                    </p>
+                    <button className="text-sm text-white/40 hover:text-white/60 transition-colors">
+                      Join waitlist →
+                    </button>
+                  </div>
+
+                  {/* Nebula - Coming Soon */}
+                  <div className="glass-card p-8 border-dashed border-2 border-white/10 opacity-60">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-xl bg-white/5 flex items-center justify-center">
+                          <svg className="w-8 h-8 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M3 15c0 3.87 3.13 7 7 7s7-3.13 7-7c0-1.5-.47-2.88-1.26-4.02C15.26 9.88 14.5 9 13.5 9c-1.5 0-2.88.47-4.02 1.26C8.38 11.4 8 12.78 8 14.5c0 1.5.47 2.88 1.26 4.02C9.74 19.62 10.5 20 11.5 20c1 0 1.88-.38 2.52-1.02C14.82 18.2 15.19 17.22 15.19 16.5c0-.72-.19-1.4-.52-2.02" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M12 8c1.5 0 2.88.47 4.02 1.26C17.12 10.4 17.5 11.78 17.5 13.5c0 1.5-.47 2.88-1.26 4.02C15.46 18.6 14.5 19 13.5 19c-1 0-1.88-.38-2.52-1.02C10.18 17.2 9.81 16.22 9.81 15.5c0-.72.19-1.4.52-2.02" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="text-2xl font-bold text-white/90 mb-1">Nebula</h4>
+                          <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-white/5 text-white/40 border border-white/10">
+                            Coming Q4 2026
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-white/50 mb-4">
+                      Provide intelligent, personalized tutoring support that adapts to each learner's pace and style, offering real-time guidance and assistance throughout their learning journey.
+                    </p>
+                    <button className="text-sm text-white/40 hover:text-white/60 transition-colors">
+                      Join waitlist →
+                    </button>
+                  </div>
+
+                  {/* Orbit - Coming Soon */}
+                  <div className="glass-card p-8 border-dashed border-2 border-white/10 opacity-60">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-xl bg-white/5 flex items-center justify-center">
+                          <svg className="w-8 h-8 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" strokeWidth={1.6} />
+                            <circle cx="12" cy="12" r="3" strokeWidth={1.6} />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M12 2v3m0 14v3M2 12h3m14 0h3" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="text-2xl font-bold text-white/90 mb-1">Orbit</h4>
+                          <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-white/5 text-white/40 border border-white/10">
+                            Coming Q3 2026
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-white/50 mb-4">
+                      Deliver personalized learning journeys and host all your courses in one place, creating a seamless and unified learning experience for your users.
+                    </p>
+                    <button className="text-sm text-white/40 hover:text-white/60 transition-colors">
+                      Join waitlist →
+                    </button>
+                  </div>
+
+                  {/* Spectrum - Coming Soon */}
+                  <div className="glass-card p-8 border-dashed border-2 border-white/10 opacity-60">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-xl bg-white/5 flex items-center justify-center">
+                          <svg className="w-8 h-8 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M4 6h16M4 12h16M4 18h16" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M8 4v16M12 4v16M16 4v16" strokeOpacity="0.6" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="text-2xl font-bold text-white/90 mb-1">Spectrum</h4>
+                          <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-white/5 text-white/40 border border-white/10">
+                            Coming Q3 2026
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-white/50 mb-4">
+                      Reveal deep insights into your learning effectiveness by analyzing complex data and presenting it with clarity.
+                    </p>
+                    <button className="text-sm text-white/40 hover:text-white/60 transition-colors">
+                      Join waitlist →
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-white mb-6">Quick Actions</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <button className="glass-card p-6 hover:scale-105 transition-transform duration-200 text-left group">
+                    <div className="w-10 h-10 rounded-lg bg-primary-500/20 flex items-center justify-center mb-4 group-hover:bg-primary-500/30 transition-colors">
+                      <svg className="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                    </div>
+                    <h4 className="font-semibold text-white mb-1">Create Starmap</h4>
+                    <p className="text-sm text-white/60">Start a new learning blueprint</p>
+                  </button>
+
+                  <button className="glass-card p-6 hover:scale-105 transition-transform duration-200 text-left group">
+                    <div className="w-10 h-10 rounded-lg bg-secondary-500/20 flex items-center justify-center mb-4 group-hover:bg-secondary-500/30 transition-colors">
+                      <svg className="w-5 h-5 text-secondary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                    <h4 className="font-semibold text-white mb-1">View Projects</h4>
+                    <p className="text-sm text-white/60">Access your active projects</p>
+                  </button>
+
+                  <button className="glass-card p-6 hover:scale-105 transition-transform duration-200 text-left group">
+                    <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center mb-4 group-hover:bg-green-500/30 transition-colors">
+                      <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                    <h4 className="font-semibold text-white mb-1">Analytics</h4>
+                    <p className="text-sm text-white/60">View performance metrics</p>
+                  </button>
+
+                  <button className="glass-card p-6 hover:scale-105 transition-transform duration-200 text-left group">
+                    <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center mb-4 group-hover:bg-blue-500/30 transition-colors">
+                      <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </div>
+                    <h4 className="font-semibold text-white mb-1">Team</h4>
+                    <p className="text-sm text-white/60">Manage team members</p>
+                  </button>
                 </div>
               </div>
             </section>
@@ -1262,9 +1396,9 @@ export function PortalPage() {
                   <Brand />
                 </div>
                 <nav className="mt-3 space-y-3 overflow-y-auto flex-1 pb-6">
-                  <NavSection title="Ignite" items={["Explore Learning", "My Learning"]} defaultOpen />
-                  <NavSection title="Strategic Skills Architecture" items={["Explore Partnership", "My Architecture"]} defaultOpen />
-                  <NavSection title="Solara" items={solaraItems} defaultOpen onItemClick={handleSolaraItemClick} />
+                  <NavSection title="Ignite" items={["Explore Learning", "My Learning"]} />
+                  <NavSection title="Strategic Skills Architecture" items={["Explore Partnership", "My Architecture"]} />
+                  <NavSection title="Solara" items={solaraItems} onItemClick={handleSolaraItemClick} />
                 </nav>
                 <div className="mt-auto">
                   <div className="px-1 py-2 border-t border-white/10">
