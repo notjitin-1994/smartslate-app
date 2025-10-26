@@ -1,15 +1,17 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
-import { env, assertRequiredEnv } from '@/config/env'
+import { env } from '@/config/env'
 
 let cachedClient: SupabaseClient | null = null
 
 export function getSupabase(): SupabaseClient {
   if (cachedClient) return cachedClient
 
-  assertRequiredEnv()
+  const supabaseUrl = env.supabaseUrl
+  const supabaseAnonKey = env.supabaseAnonKey
 
-  const supabaseUrl = env.supabaseUrl as string
-  const supabaseAnonKey = env.supabaseAnonKey as string
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Application not configured. Please contact support.')
+  }
 
   cachedClient = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
@@ -19,6 +21,13 @@ export function getSupabase(): SupabaseClient {
     },
   })
   return cachedClient
+}
+
+/**
+ * Check if Supabase client can be initialized
+ */
+export function canInitializeSupabase(): boolean {
+  return !!(env.supabaseUrl && env.supabaseAnonKey)
 }
 
 

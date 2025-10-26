@@ -30,13 +30,19 @@ export default defineConfig({
             if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
               return 'react-vendor'
             }
+            // MUI libraries
+            if (id.includes('@mui') || id.includes('@emotion')) {
+              return 'mui-vendor'
+            }
             // All other vendor libraries
             return 'vendor'
           }
           // Split feature modules
           if (id.includes('src/features/')) {
-            const feature = id.split('src/features/')[1].split('/')[0]
-            return `feature-${feature}`
+            const feature = id.split('src/features/')[1]?.split('/')[0]
+            if (feature) {
+              return `feature-${feature}`
+            }
           }
           // Portal-specific code
           if (id.includes('src/portal/')) {
@@ -44,10 +50,9 @@ export default defineConfig({
           }
         },
         // Use consistent chunk names for better caching
-        chunkFileNames: (chunkInfo) => {
-          const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop() : 'chunk'
-          return `assets/[name]-${facadeModuleId}-[hash].js`
-        }
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash][extname]'
       }
     }
   }

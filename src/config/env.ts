@@ -84,8 +84,18 @@ export function assertRequiredEnv(): void {
       )
     }
     
-    throw new Error(message)
+    // Don't throw in production - let components handle gracefully
+    if (!env.isProd) {
+      throw new Error(message)
+    }
   }
+}
+
+/**
+ * Check if environment is properly configured
+ */
+export function isEnvConfigured(): boolean {
+  return !!(env.supabaseUrl && env.supabaseAnonKey)
 }
 
 /**

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
-import { getSupabase } from '@/services/supabase'
+import { getSupabase, canInitializeSupabase } from '@/services/supabase'
 import { paths } from '@/routes/paths'
 import type { User } from '@supabase/supabase-js'
 
@@ -11,30 +11,56 @@ interface RequireAuthProps {
 export function RequireAuth({ children }: RequireAuthProps) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
   const location = useLocation()
 
   useEffect(() => {
     let isMounted = true
 
-    // Check current session
-    getSupabase().auth.getSession().then(({ data: { session } }) => {
+    // Check if Supabase can be initialized
+    if (!canInitializeSupabase()) {
       if (isMounted) {
-        setUser(session?.user ?? null)
+        setError(new Error('Application not configured'))
         setLoading(false)
       }
-    })
+      return
+    }
 
-    // Listen for auth state changes
-    const { data: { subscription } } = getSupabase().auth.onAuthStateChange((_event, session) => {
+    try {
+      const supabase = getSupabase()
+
+      // Check current session
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (isMounted) {
+          setUser(session?.user ?? null)
+          setLoading(false)
+        }
+      }).catch((err) => {
+        if (isMounted) {
+          console.error('Failed to get session:', err)
+          setError(err)
+          setLoading(false)
+        }
+      })
+
+      // Listen for auth state changes
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (isMounted) {
+          setUser(session?.user ?? null)
+          setLoading(false)
+        }
+      })
+
+      return () => {
+        isMounted = false
+        subscription.unsubscribe()
+      }
+    } catch (err) {
       if (isMounted) {
-        setUser(session?.user ?? null)
+        console.error('Failed to initialize auth:', err)
+        setError(err instanceof Error ? err : new Error('Failed to initialize'))
         setLoading(false)
       }
-    })
-
-    return () => {
-      isMounted = false
-      subscription.unsubscribe()
     }
   }, [])
 
@@ -46,6 +72,10 @@ export function RequireAuth({ children }: RequireAuthProps) {
         </div>
       </div>
     )
+  }
+
+  if (error) {
+    return <Navigate to={paths.home} replace />
   }
 
   if (!user) {
