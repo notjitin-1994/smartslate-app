@@ -3,6 +3,7 @@ export const paths = {
   portal: '/stargate',
   portalUser: '/stargate/:user',
   settings: '/stargate/settings',
+  pitch: '/pitch',
   publicProfile: '/:username',
 } as const
 

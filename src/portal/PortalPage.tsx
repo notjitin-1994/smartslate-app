@@ -6,6 +6,7 @@ import { getSupabase } from '@/services/supabase'
 import { paths, portalUserPath, publicProfilePath } from '@/routes/paths'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { getCapitalizedFirstName } from '@/lib/textUtils'
+import Footer from '@/components/layout/Footer'
 
 
 type NavItem = string | { label: string; tagText?: string; tagTone?: 'preview' | 'soon' | 'info' }
@@ -515,7 +516,7 @@ export function PortalPage() {
   ]
 
   return (
-    <div className={`h-screen w-full overflow-hidden bg-[rgb(var(--bg))] text-[rgb(var(--text))]${isLeaving ? ' page-leave' : ''}`}>
+    <div className={`h-screen w-full overflow-hidden bg-[var(--background)] text-[rgb(var(--text))]${isLeaving ? ' page-leave' : ''}`}>
       <div className="flex h-full">
         <aside className={`hidden md:flex ${sidebarCollapsed ? 'md:w-16 lg:w-16' : 'md:w-72 lg:w-80'} h-full min-h-0 flex-col bg-surface shadow-sm backdrop-blur-xl transition-all duration-300 ease-out`}>
           <div className={`${sidebarCollapsed ? 'px-2 py-3' : 'px-6 py-5'} flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'} bg-surface/80 sticky top-0 z-20 backdrop-blur-sm`}>
@@ -680,14 +681,11 @@ export function PortalPage() {
                 </button>
               </div>
             )}
-            <div className={`border-t border-white/10 text-xs text-white/50 ${sidebarCollapsed ? 'px-0 py-2 flex items-center justify-center' : 'px-4 py-3'}`}>
-              {sidebarCollapsed ? '❤️' : 'Made with ❤️ for better education'}
-            </div>
           </div>
         </aside>
 
         <main className="flex-1 min-w-0 h-full overflow-y-auto">
-          <header className="sticky top-0 z-10 border-b border-white/10 bg-[rgb(var(--bg))]/80 backdrop-blur-xl mb-12 md:mb-0">
+          <header className="sticky top-0 z-10 border-b border-white/10 bg-[var(--background)]/80 backdrop-blur-xl mb-12 md:mb-0">
             <div className="relative mx-auto max-w-7xl px-4 py-3 sm:py-4">
               <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 -top-24 h-48 bg-gradient-to-br from-primary-400/10 via-fuchsia-400/5 to-transparent blur-2xl" />
               <div className="relative animate-fade-in-up">
@@ -1142,7 +1140,7 @@ export function PortalPage() {
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg">
-                          <IconSun className="w-8 h-8 text-white" />
+                          <IconSun className="w-8 h-8 text-black" />
                         </div>
                         <div>
                           <h4 className="text-2xl font-bold text-white mb-1">Polaris</h4>
@@ -1341,6 +1339,10 @@ export function PortalPage() {
               </div>
             </section>
           )}
+
+          {/* Footer */}
+          {!isSettings && !viewingProfile && <Footer />}
+
           {toast && (
             <div className="fixed bottom-4 right-4 z-[60] animate-fade-in-up">
               <div className={`rounded-xl border px-4 py-3 shadow-xl backdrop-blur-xl ${toast.kind === 'success' ? 'border-green-500/30 bg-green-500/15 text-green-100' : 'border-red-500/30 bg-red-500/15 text-red-100'}`}>
@@ -1355,7 +1357,7 @@ export function PortalPage() {
             <div className="fixed inset-0 z-50 animate-fade-in" onClick={closeProfileMenu} aria-hidden="true">
               <div
                 ref={menuRef}
-                className="absolute z-50 min-w-[160px] rounded-lg border border-white/10 bg-[rgb(var(--bg))]/95 backdrop-blur-xl shadow-2xl p-1 text-sm animate-scale-in"
+                className="absolute z-50 min-w-[160px] rounded-lg border border-white/10 bg-[var(--background)]/95 backdrop-blur-xl shadow-2xl p-1 text-sm animate-scale-in"
                 style={{
                   top: `${profileMenu.y}px`,
                   ...(profileMenu.align === 'center'
@@ -1383,7 +1385,7 @@ export function PortalPage() {
           {mobileMenuOpen && (
             <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true">
               <div className="absolute inset-0 bg-black/50 animate-fade-in" onClick={() => setMobileMenuOpen(false)} />
-              <div className="absolute right-0 top-0 h-full w-72 max-w-[85vw] bg-[rgb(var(--bg))]/95 backdrop-blur-xl border-l border-white/10 shadow-2xl p-3 animate-slide-in-right flex flex-col">
+              <div className="absolute right-0 top-0 h-full w-72 max-w-[85vw] bg-[var(--background)]/95 backdrop-blur-xl border-l border-white/10 shadow-2xl p-3 animate-slide-in-right flex flex-col">
                 <div className="flex items-center justify-between px-1 py-2 border-b border-white/10">
                   <button
                     type="button"

@@ -1,3 +1,5 @@
+'use client';
+
 import { memo, useEffect, useMemo, useState } from 'react';
 
 type HeaderSwirlBackgroundProps = {
@@ -33,7 +35,7 @@ const HeaderSwirlBackground = memo(
     const swirls = useMemo(() => {
       if (isMobile) {
         return baseSwirls
-          .filter((s) => Number(s.left.replace('%', '')) <= 60)
+          .filter((s) => Number(s.left.replace('%', '')) <= 60) // keep left cluster only
           .filter((_, idx) => idx % 2 === 0)
           .slice(0, 4)
           .map((s) => ({
@@ -50,8 +52,10 @@ const HeaderSwirlBackground = memo(
         className={`pointer-events-none absolute inset-0 z-0 select-none ${className}`}
         aria-hidden="true"
       >
+        {/* Subtle ambient backdrop without gradients */}
         <div className="bg-primary/5 absolute inset-0" />
 
+        {/* Subtle noise overlay via SVG data URI for depth */}
         <div
           className="absolute inset-0"
           style={{
@@ -62,6 +66,7 @@ const HeaderSwirlBackground = memo(
           }}
         />
 
+        {/* Minimal, soft swirls */}
         {swirls.map((s) => (
           <img
             key={s.id}
@@ -83,6 +88,7 @@ const HeaderSwirlBackground = memo(
           />
         ))}
 
+        {/* Subtle vignette without gradients */}
         <div className="absolute inset-0 bg-black/10" />
       </div>
     );

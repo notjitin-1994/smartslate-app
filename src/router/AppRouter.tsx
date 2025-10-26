@@ -4,11 +4,12 @@ import { paths } from '@/routes/paths'
 import { RequireAuth } from './RequireAuth'
 
 // Lazy load pages for better performance
-const AuthLanding = lazy(() => import('@/pages/AuthLanding'))
-const AuthCallback = lazy(() => import('@/pages/AuthCallback'))
+const AuthLanding = lazy(() => import('@/pages/AuthLanding').then(m => ({ default: m.default })))
+const AuthCallback = lazy(() => import('@/pages/AuthCallback').then(m => ({ default: m.default })))
 const PortalPage = lazy(() => import('@/pages/PortalPage').then(m => ({ default: m.PortalPage })))
 const SettingsContent = lazy(() => import('@/portal/SettingsContent').then(m => ({ default: m.SettingsContent })))
 const PublicProfile = lazy(() => import('@/pages/PublicProfile').then(m => ({ default: m.PublicProfile })))
+const PitchDeck = lazy(() => import('@/pages/PitchDeck').then(m => ({ default: m.default })))
 
 // Loading component
 function PageLoader() {
@@ -48,6 +49,20 @@ export function AppRouter() {
           } />
           
           <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path={paths.pitch} element={<PitchDeck />} />
+
+          {/* Footer link routes - add these before the catch-all profile route */}
+          <Route path="/features" element={<Navigate to={paths.home} replace />} />
+          <Route path="/pricing" element={<Navigate to={paths.home} replace />} />
+          <Route path="/difference" element={<Navigate to={paths.home} replace />} />
+          <Route path="/careers" element={<Navigate to={paths.home} replace />} />
+          <Route path="/contact" element={<Navigate to={paths.home} replace />} />
+          <Route path="/partner" element={<Navigate to={paths.home} replace />} />
+          <Route path="/legal/privacy" element={<Navigate to={paths.home} replace />} />
+          <Route path="/legal/terms" element={<Navigate to={paths.home} replace />} />
+          <Route path="/cookies" element={<Navigate to={paths.home} replace />} />
+
+          {/* Catch-all profile route - must be last */}
           <Route path={paths.publicProfile} element={<PublicProfile />} />
         </Routes>
       </Suspense>

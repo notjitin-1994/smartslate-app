@@ -468,7 +468,7 @@ export function SettingsContent() {
                     console.log('Menu button clicked, current state:', showAvatarMenu)
                     setShowAvatarMenu(!showAvatarMenu)
                   }}
-                  className="w-7 h-7 rounded-full bg-secondary-500 hover:bg-secondary-600 border-2 border-[rgb(var(--bg))] flex items-center justify-center text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                  className="w-7 h-7 rounded-full bg-secondary-500 hover:bg-secondary-600 border-2 border-[rgb(var(--background))] flex items-center justify-center text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
                   title="Photo options"
                 >
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -478,7 +478,7 @@ export function SettingsContent() {
 
                 {/* Avatar Menu */}
                 {showAvatarMenu && (
-                  <div className="absolute bottom-8 right-0 bg-[rgb(var(--bg))] border border-white/10 rounded-lg shadow-xl backdrop-blur-xl p-1 min-w-[140px] z-[9999]">
+                  <div className="absolute bottom-8 right-0 bg-[rgb(var(--background))] border border-white/10 rounded-lg shadow-xl backdrop-blur-xl p-1 min-w-[140px] z-[9999]">
                     {getAvatarUrl(user) && !(user as any)?.user_metadata?.avatar_path && (
                       <button
                         type="button"
@@ -914,7 +914,7 @@ export function SettingsContent() {
       {showAvatarModal && getAvatarUrl(user) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm" onClick={() => setShowAvatarModal(false)}>
           <div className="relative max-w-md max-h-[80vh] p-4" onClick={(e) => e.stopPropagation()}>
-            <div className="relative bg-[rgb(var(--bg))] rounded-2xl border border-white/10 backdrop-blur-xl p-6 shadow-2xl">
+            <div className="relative bg-[rgb(var(--background))] rounded-2xl border border-white/10 backdrop-blur-xl p-6 shadow-2xl">
               <button
                 type="button"
                 onClick={() => setShowAvatarModal(false)}

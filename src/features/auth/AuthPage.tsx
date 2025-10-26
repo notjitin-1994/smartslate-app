@@ -45,19 +45,20 @@ export function AuthPage() {
               <div className="flex h-full w-full max-w-xl flex-col p-2 text-left sm:p-3 md:p-4 lg:max-w-none">
                 <div className="mb-6">
                   <div className="inline-flex items-center gap-2">
-                    <div className="relative">
-                      <img
-                        src="/images/logos/logo.png"
-                        alt="Smartslate"
-                        className="h-8 w-auto select-none transition-all duration-300 md:h-9 lg:h-10"
-                        style={{
-                          transform: isSignup ? 'scale(1.1)' : 'scale(1)',
-                        }}
-                      />
-                      <span className="font-heading absolute -top-1 -right-8 text-xs font-medium text-white md:-right-10 md:text-sm">
-                        Polaris
-                      </span>
-                    </div>
+                    <img
+                      src="/images/logos/logo.png"
+                      alt="Smartslate"
+                      className="h-8 w-auto select-none transition-all duration-300 md:h-9 lg:h-10"
+                      style={{
+                        transform: isSignup ? 'scale(1.1)' : 'scale(1)',
+                      }}
+                    />
+                    <span
+                      className="font-heading -mt-2 text-xs font-medium text-white md:text-sm"
+                      style={{ transform: 'translateY(-20%)' }}
+                    >
+                      Stargate
+                    </span>
                   </div>
                   <div className="relative mt-3 max-w-2xl overflow-hidden">
                     <p
@@ -67,12 +68,12 @@ export function AuthPage() {
                     >
                       {isSignup
                         ? 'Turn customer insight into a clear, prioritized roadmap. Align faster. Build smarter.'
-                        : 'Welcome back to Polaris Starmaps. Access your insights and continue building smarter.'}
+                        : "Return to Stargate—your gateway to SmartSlate's product universe. Where powerful tools converge to accelerate your vision."}
                     </p>
                   </div>
                 </div>
 
-                {/* Public report mockup with dynamic sizing */}
+                {/* Landing page skeletal mockup with dynamic sizing */}
                 <div
                   className={`hidden flex-1 overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-[0_10px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl transition-all duration-500 sm:block ${
                     isSignup
@@ -80,7 +81,7 @@ export function AuthPage() {
                       : 'mt-4 min-h-[320px] md:min-h-[380px] lg:min-h-[420px]'
                   }`}
                 >
-                  {/* Mock header */}
+                  {/* Mock header with navigation */}
                   <div
                     className={`relative overflow-hidden border-b border-white/10 bg-[rgb(2,12,27)]/60 backdrop-blur-xl transition-all duration-500 ${
                       isSignup ? 'min-h-[34px] md:min-h-[40px]' : 'min-h-[30px] md:min-h-[36px]'
@@ -94,7 +95,7 @@ export function AuthPage() {
                           : 'px-[0.4rem] py-[0.3rem] md:px-[0.5rem] md:py-[0.4rem]'
                       }`}
                     >
-                      <div className="flex flex-col items-start">
+                      <div className="flex items-center gap-2">
                         <img
                           src="/images/logos/logo.png"
                           alt="SmartSlate"
@@ -102,317 +103,199 @@ export function AuthPage() {
                             isSignup ? 'h-4 md:h-5 lg:h-6' : 'h-3 md:h-4 lg:h-5'
                           }`}
                         />
-                        <span
-                          className={`font-['Lato'] font-medium text-white transition-all duration-500 ${
-                            isSignup ? 'mt-1 text-xs md:text-sm' : 'mt-0.5 text-[10px] md:text-[11px]'
-                          }`}
-                        >
-                          Polaris Starmaps
-                        </span>
                       </div>
                       <div
                         className={`hidden items-center md:flex transition-all duration-500 ${
-                          isSignup ? 'gap-3' : 'gap-2'
+                          isSignup ? 'gap-2' : 'gap-1.5'
                         }`}
                       >
-                        <span
-                          className={`bg-[rgb(var(--primary))] rounded-full border border-white/10 transition-all duration-500 ${
-                            isSignup ? 'h-[14px] w-[14px]' : 'h-[10px] w-[10px]'
+                        <div
+                          className={`rounded-full bg-white/10 transition-all duration-500 ${
+                            isSignup ? 'h-[18px] w-[40px]' : 'h-[14px] w-[32px]'
                           }`}
                         />
-                        <span
-                          className={`bg-[rgb(var(--primary)/0.3)] rounded-full border border-white/10 transition-all duration-500 ${
-                            isSignup ? 'h-[14px] w-[14px]' : 'h-[10px] w-[10px]'
+                        <div
+                          className={`rounded-full bg-white/10 transition-all duration-500 ${
+                            isSignup ? 'h-[18px] w-[40px]' : 'h-[14px] w-[32px]'
+                          }`}
+                        />
+                        <div
+                          className={`rounded-full bg-white/10 transition-all duration-500 ${
+                            isSignup ? 'h-[18px] w-[40px]' : 'h-[14px] w-[32px]'
                           }`}
                         />
                       </div>
                     </div>
                   </div>
 
-                  {/* Mock blueprint sections */}
+                  {/* Landing page sections as cards */}
                   <div
-                    className={`block h-full transition-all duration-500 ${
+                    className={`block h-full overflow-y-auto scrollbar-hide transition-all duration-500 ${
                       isSignup ? 'p-4 md:p-6' : 'p-2 md:p-3'
                     }`}
                   >
-                    <div
-                      className={`h-full overflow-hidden border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-500 ${
-                        isSignup ? 'rounded-2xl' : 'rounded-xl'
-                      }`}
-                    >
+                    <div className={isSignup ? 'space-y-4' : 'space-y-2'}>
+                      {/* Hero Card */}
                       <div
-                        className={`flex h-full flex-col transition-all duration-500 ${
-                          isSignup ? 'p-4 md:p-6' : 'p-2 md:p-3'
+                        className={`rounded-lg border border-white/10 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl transition-all duration-500 ${
+                          isSignup ? 'rounded-2xl p-6' : 'rounded-xl p-3 md:p-4'
                         }`}
                       >
-                        {/* Executive Summary Section */}
                         <div
-                          className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
-                            isSignup ? 'mb-6 rounded-xl p-4' : 'mb-3 p-2 md:p-3'
+                          className={`rounded-full bg-white/30 transition-all duration-500 ${
+                            isSignup ? 'mb-4 h-5 w-48' : 'mb-2 h-3 w-32'
                           }`}
-                        >
+                        />
+                        <div className={isSignup ? 'space-y-2' : 'space-y-1.5'}>
                           <div
-                            className={`rounded-full bg-white/30 transition-all duration-500 ${
-                              isSignup ? 'mb-3 h-4 w-32' : 'mb-2 h-3 w-24'
+                            className={`w-full rounded-full bg-white/15 transition-all duration-500 ${
+                              isSignup ? 'h-2.5' : 'h-2'
                             }`}
                           />
-                          <div className={isSignup ? 'space-y-2' : 'space-y-1'}>
-                            <div
-                              className={`w-full rounded-full bg-white/15 transition-all duration-500 ${
-                                isSignup ? 'h-2' : 'h-1.5'
-                              }`}
-                            />
-                            <div
-                              className={`w-4/5 rounded-full bg-white/10 transition-all duration-500 ${
-                                isSignup ? 'h-2' : 'h-1.5'
-                              }`}
-                            />
-                            <div
-                              className={`w-3/4 rounded-full bg-white/10 transition-all duration-500 ${
-                                isSignup ? 'h-2' : 'h-1.5'
-                              }`}
-                            />
-                          </div>
+                          <div
+                            className={`w-5/6 rounded-full bg-white/12 transition-all duration-500 ${
+                              isSignup ? 'h-2.5' : 'h-2'
+                            }`}
+                          />
+                          <div
+                            className={`w-4/5 rounded-full bg-white/10 transition-all duration-500 ${
+                              isSignup ? 'h-2.5' : 'h-2'
+                            }`}
+                          />
                         </div>
-
-                        {/* Learning Objectives Section */}
                         <div
-                          className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
-                            isSignup ? 'mb-6 rounded-xl p-4' : 'mb-3 p-2 md:p-3'
+                          className={`mt-4 rounded-full transition-all duration-500 ${
+                            isSignup
+                              ? 'h-9 w-36 bg-[var(--secondary-accent)]/30'
+                              : 'h-7 w-28 bg-[var(--secondary-accent)]/30'
+                          }`}
+                        />
+                      </div>
+
+                      {/* Paradox Card */}
+                      <div
+                        className={`rounded-lg border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-500 ${
+                          isSignup ? 'rounded-xl p-5' : 'p-3'
+                        }`}
+                      >
+                        <div
+                          className={`rounded-full bg-white/25 transition-all duration-500 ${
+                            isSignup ? 'mb-3 h-4 w-40' : 'mb-2 h-3 w-28'
+                          }`}
+                        />
+                        <div
+                          className={`grid grid-cols-2 transition-all duration-500 ${
+                            isSignup ? 'gap-3' : 'gap-2'
                           }`}
                         >
                           <div
-                            className={`rounded-full bg-white/30 transition-all duration-500 ${
-                              isSignup ? 'mb-3 h-4 w-40' : 'mb-2 h-3 w-32'
+                            className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
+                              isSignup ? 'h-16' : 'h-10'
                             }`}
                           />
                           <div
-                            className={`grid grid-cols-2 transition-all duration-500 ${
-                              isSignup ? 'gap-3' : 'gap-2'
+                            className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
+                              isSignup ? 'h-16' : 'h-10'
                             }`}
-                          >
-                            <div className={isSignup ? 'space-y-2' : 'space-y-1'}>
-                              <div
-                                className={`w-3/4 rounded-full bg-white/15 transition-all duration-500 ${
-                                  isSignup ? 'h-2' : 'h-1.5'
-                                }`}
-                              />
-                              <div
-                                className={`rounded border border-white/10 bg-white/5 transition-all duration-500 ${
-                                  isSignup ? 'h-8 rounded-lg' : 'h-6'
-                                }`}
-                              />
-                            </div>
-                            <div className={isSignup ? 'space-y-2' : 'space-y-1'}>
-                              <div
-                                className={`w-2/3 rounded-full bg-white/15 transition-all duration-500 ${
-                                  isSignup ? 'h-2' : 'h-1.5'
-                                }`}
-                              />
-                              <div
-                                className={`rounded border border-white/10 bg-white/5 transition-all duration-500 ${
-                                  isSignup ? 'h-8 rounded-lg' : 'h-6'
-                                }`}
-                              />
-                            </div>
-                          </div>
+                          />
                         </div>
+                      </div>
 
-                        {/* Target Audience Section */}
+                      {/* Framework Card */}
+                      <div
+                        className={`rounded-lg border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-500 ${
+                          isSignup ? 'rounded-xl p-5' : 'p-3'
+                        }`}
+                      >
                         <div
-                          className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
-                            isSignup ? 'mb-6 rounded-xl p-4' : 'mb-3 p-2 md:p-3'
+                          className={`rounded-full bg-white/25 transition-all duration-500 ${
+                            isSignup ? 'mb-3 h-4 w-32' : 'mb-2 h-3 w-24'
+                          }`}
+                        />
+                        <div
+                          className={`grid grid-cols-3 transition-all duration-500 ${
+                            isSignup ? 'gap-2' : 'gap-1.5'
                           }`}
                         >
                           <div
-                            className={`rounded-full bg-white/30 transition-all duration-500 ${
-                              isSignup ? 'mb-3 h-4 w-36' : 'mb-2 h-3 w-28'
+                            className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
+                              isSignup ? 'h-14' : 'h-9'
                             }`}
                           />
                           <div
-                            className={`grid grid-cols-3 transition-all duration-500 ${
-                              isSignup ? 'gap-2' : 'gap-1'
+                            className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
+                              isSignup ? 'h-14' : 'h-9'
                             }`}
-                          >
-                            <div
-                              className={`rounded border border-white/10 bg-white/5 transition-all duration-500 ${
-                                isSignup ? 'h-12 rounded-lg' : 'h-8'
-                              }`}
-                            />
-                            <div
-                              className={`rounded border border-white/10 bg-white/5 transition-all duration-500 ${
-                                isSignup ? 'h-12 rounded-lg' : 'h-8'
-                              }`}
-                            />
-                            <div
-                              className={`rounded border border-white/10 bg-white/5 transition-all duration-500 ${
-                                isSignup ? 'h-12 rounded-lg' : 'h-8'
-                              }`}
-                            />
-                          </div>
+                          />
+                          <div
+                            className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
+                              isSignup ? 'h-14' : 'h-9'
+                            }`}
+                          />
                         </div>
+                      </div>
 
-                        {/* Content Outline Section */}
+                      {/* ROI Calculator Card */}
+                      <div
+                        className={`rounded-lg border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-500 ${
+                          isSignup ? 'rounded-xl p-5' : 'p-3'
+                        }`}
+                      >
                         <div
-                          className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
-                            isSignup ? 'mb-6 rounded-xl p-4' : 'mb-3 p-2 md:p-3'
+                          className={`rounded-full bg-white/25 transition-all duration-500 ${
+                            isSignup ? 'mb-3 h-4 w-36' : 'mb-2 h-3 w-28'
                           }`}
-                        >
+                        />
+                        <div className={isSignup ? 'space-y-2' : 'space-y-1.5'}>
                           <div
-                            className={`rounded-full bg-white/30 transition-all duration-500 ${
-                              isSignup ? 'mb-3 h-4 w-32' : 'mb-2 h-3 w-24'
+                            className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
+                              isSignup ? 'h-8' : 'h-6'
                             }`}
                           />
-                          <div className={isSignup ? 'space-y-3' : 'space-y-2'}>
-                            <div
-                              className={`flex items-center transition-all duration-500 ${
-                                isSignup ? 'gap-3' : 'gap-2'
-                              }`}
-                            >
-                              <div
-                                className={`bg-[rgb(var(--primary))] rounded-full transition-all duration-500 ${
-                                  isSignup ? 'h-3 w-3' : 'h-2 w-2'
-                                }`}
-                              />
-                              <div
-                                className={`flex-1 rounded-full bg-white/15 transition-all duration-500 ${
-                                  isSignup ? 'h-2' : 'h-1.5'
-                                }`}
-                              />
-                            </div>
-                            <div
-                              className={`flex items-center transition-all duration-500 ${
-                                isSignup ? 'gap-3' : 'gap-2'
-                              }`}
-                            >
-                              <div
-                                className={`rounded-full bg-white/20 transition-all duration-500 ${
-                                  isSignup ? 'h-3 w-3' : 'h-2 w-2'
-                                }`}
-                              />
-                              <div
-                                className={`flex-1 rounded-full bg-white/10 transition-all duration-500 ${
-                                  isSignup ? 'h-2' : 'h-1.5'
-                                }`}
-                              />
-                            </div>
-                            <div
-                              className={`flex items-center transition-all duration-500 ${
-                                isSignup ? 'gap-3' : 'gap-2'
-                              }`}
-                            >
-                              <div
-                                className={`rounded-full bg-white/20 transition-all duration-500 ${
-                                  isSignup ? 'h-3 w-3' : 'h-2 w-2'
-                                }`}
-                              />
-                              <div
-                                className={`flex-1 rounded-full bg-white/10 transition-all duration-500 ${
-                                  isSignup ? 'h-2' : 'h-1.5'
-                                }`}
-                              />
-                            </div>
-                          </div>
+                          <div
+                            className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
+                              isSignup ? 'h-8' : 'h-6'
+                            }`}
+                          />
                         </div>
+                      </div>
 
-                        {/* Assessment Strategy Section */}
+                      {/* Partners Card */}
+                      <div
+                        className={`rounded-lg border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-500 ${
+                          isSignup ? 'rounded-xl p-5' : 'p-3'
+                        }`}
+                      >
                         <div
-                          className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
-                            isSignup ? 'mb-6 rounded-xl p-4' : 'mb-3 p-2 md:p-3'
+                          className={`rounded-full bg-white/25 transition-all duration-500 ${
+                            isSignup ? 'mb-3 h-4 w-28' : 'mb-2 h-3 w-20'
+                          }`}
+                        />
+                        <div
+                          className={`grid grid-cols-4 transition-all duration-500 ${
+                            isSignup ? 'gap-2' : 'gap-1.5'
                           }`}
                         >
                           <div
-                            className={`rounded-full bg-white/30 transition-all duration-500 ${
-                              isSignup ? 'mb-3 h-4 w-40' : 'mb-2 h-3 w-32'
+                            className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
+                              isSignup ? 'h-10' : 'h-7'
                             }`}
                           />
                           <div
-                            className={`grid grid-cols-2 transition-all duration-500 ${
-                              isSignup ? 'gap-3' : 'gap-2'
-                            }`}
-                          >
-                            <div className={isSignup ? 'space-y-2' : 'space-y-1'}>
-                              <div
-                                className={`w-3/4 rounded-full bg-white/15 transition-all duration-500 ${
-                                  isSignup ? 'h-2' : 'h-1.5'
-                                }`}
-                              />
-                              <div
-                                className={`rounded border border-white/10 bg-white/5 transition-all duration-500 ${
-                                  isSignup ? 'h-8 rounded-lg' : 'h-6'
-                                }`}
-                              />
-                            </div>
-                            <div className={isSignup ? 'space-y-2' : 'space-y-1'}>
-                              <div
-                                className={`w-2/3 rounded-full bg-white/15 transition-all duration-500 ${
-                                  isSignup ? 'h-2' : 'h-1.5'
-                                }`}
-                              />
-                              <div
-                                className={`rounded border border-white/10 bg-white/5 transition-all duration-500 ${
-                                  isSignup ? 'h-8 rounded-lg' : 'h-6'
-                                }`}
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Resources Section */}
-                        <div
-                          className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
-                            isSignup ? 'rounded-xl p-4' : 'p-2 md:p-3'
-                          }`}
-                        >
-                          <div
-                            className={`rounded-full bg-white/30 transition-all duration-500 ${
-                              isSignup ? 'mb-3 h-4 w-24' : 'mb-2 h-3 w-20'
+                            className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
+                              isSignup ? 'h-10' : 'h-7'
                             }`}
                           />
-                          <div className={isSignup ? 'space-y-2' : 'space-y-1'}>
-                            <div
-                              className={`grid grid-cols-3 transition-all duration-500 ${
-                                isSignup ? 'gap-2' : 'gap-1'
-                              }`}
-                            >
-                              <div
-                                className={`rounded border border-white/10 bg-white/5 transition-all duration-500 ${
-                                  isSignup ? 'h-6' : 'h-4'
-                                }`}
-                              />
-                              <div
-                                className={`rounded border border-white/10 bg-white/5 transition-all duration-500 ${
-                                  isSignup ? 'h-6' : 'h-4'
-                                }`}
-                              />
-                              <div
-                                className={`rounded border border-white/10 bg-white/5 transition-all duration-500 ${
-                                  isSignup ? 'h-6' : 'h-4'
-                                }`}
-                              />
-                            </div>
-                            <div
-                              className={`grid grid-cols-3 transition-all duration-500 ${
-                                isSignup ? 'gap-2' : 'gap-1'
-                              }`}
-                            >
-                              <div
-                                className={`rounded border border-white/10 bg-white/5 transition-all duration-500 ${
-                                  isSignup ? 'h-6' : 'h-4'
-                                }`}
-                              />
-                              <div
-                                className={`rounded border border-white/10 bg-white/5 transition-all duration-500 ${
-                                  isSignup ? 'h-6' : 'h-4'
-                                }`}
-                              />
-                              <div
-                                className={`rounded border border-white/10 bg-white/5 transition-all duration-500 ${
-                                  isSignup ? 'h-6' : 'h-4'
-                                }`}
-                              />
-                            </div>
-                          </div>
+                          <div
+                            className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
+                              isSignup ? 'h-10' : 'h-7'
+                            }`}
+                          />
+                          <div
+                            className={`rounded-lg border border-white/10 bg-white/5 transition-all duration-500 ${
+                              isSignup ? 'h-10' : 'h-7'
+                            }`}
+                          />
                         </div>
                       </div>
                     </div>
@@ -462,16 +345,16 @@ export function AuthPage() {
                               }`}
                             >
                               {isSignup
-                                ? 'Get started with Polaris Starmaps.'
-                                : 'Access Polaris Starmaps and your reports.'}
+                                ? 'Get started with Stargate Starmaps.'
+                                : 'Access Stargate Starmaps and your reports.'}
                             </p>
                           </div>
                         </div>
 
                         {/* Animated form content */}
-                        <div className="relative min-h-[400px]">
+                        <div className="relative">
                           <div
-                            className={`absolute inset-0 transition-all duration-300 ${
+                            className={`transition-all duration-300 ${
                               isAnimating
                                 ? 'opacity-0 translate-x-4'
                                 : 'opacity-100 translate-x-0'
@@ -493,7 +376,7 @@ export function AuthPage() {
                             <button
                               type="button"
                               onClick={() => handleModeSwitch(isSignup ? 'login' : 'signup')}
-                              className="text-[rgb(var(--secondary))] hover:text-[rgb(var(--secondary)/0.8)] underline underline-offset-4"
+                              className="text-[var(--secondary-accent)] hover:text-[var(--secondary-accent-light)] underline underline-offset-4"
                             >
                               {isSignup ? 'Sign In' : 'Sign Up'}
                             </button>
@@ -505,7 +388,7 @@ export function AuthPage() {
                             href="/terms"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[rgb(var(--primary))] hover:text-[rgb(var(--primary)/0.8)] underline underline-offset-4"
+                            className="text-[var(--primary-accent)] hover:text-[var(--primary-accent-light)] underline underline-offset-4"
                           >
                             Terms
                           </a>{' '}
@@ -514,7 +397,7 @@ export function AuthPage() {
                             href="/privacy"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[rgb(var(--primary))] hover:text-[rgb(var(--primary)/0.8)] underline underline-offset-4"
+                            className="text-[var(--primary-accent)] hover:text-[var(--primary-accent-light)] underline underline-offset-4"
                           >
                             Privacy Policy
                           </a>

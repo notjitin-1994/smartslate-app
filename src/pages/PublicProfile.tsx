@@ -5,6 +5,7 @@ import { getSupabase } from '@/services/supabase'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { StaticSwirls } from '@/components/StaticSwirls'
 import { generateProfilePDF } from '@/utils/pdfGenerator'
+import Footer from '@/components/layout/Footer'
 
 function resolveUserAvatarUrl(user: User | null): string | null {
   const meta: any = user?.user_metadata ?? {}
@@ -191,7 +192,7 @@ export function PublicProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen w-full bg-[rgb(var(--bg))] text-[rgb(var(--text))] flex items-center justify-center">
+      <div className="min-h-screen w-full bg-[var(--background)] text-[rgb(var(--text))] flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-primary-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-white/60">Loading profile...</p>
@@ -201,7 +202,7 @@ export function PublicProfile() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[rgb(var(--bg))] text-[rgb(var(--text))] relative">
+    <div className="min-h-screen w-full bg-[var(--background)] text-[rgb(var(--text))] relative">
       {/* Static swirl background */}
       <StaticSwirls 
         imageSrc="/images/logos/logo-swirl.png"
@@ -213,7 +214,7 @@ export function PublicProfile() {
         areaPadding={24}
       />
       {/* Header with Smartslate Branding */}
-      <header className="relative z-10 border-b border-white/10 bg-[rgb(var(--bg))]/80 backdrop-blur-xl">
+      <header className="relative z-10 border-b border-white/10 bg-[var(--background)]/80 backdrop-blur-xl">
         <div className="mx-auto max-w-4xl px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex flex-col items-start">
@@ -505,21 +506,10 @@ export function PublicProfile() {
           </div>
         </div>
 
-        {/* Footer with Smartslate Branding */}
-        <footer className="relative z-10 mt-12 pt-8 border-t border-white/10 text-center">
-          <div className="flex flex-col items-center justify-center mb-4">
-            <img src="/images/logos/logo.png" alt="SmartSlate" className="h-6 w-auto opacity-60 mb-2" />
-            <span className="text-white/60 text-sm">Powered by Smartslate</span>
-          </div>
-          <p className="text-xs text-white/40 mb-4">
-            Create your professional profile and showcase your achievements
-          </p>
-          <div className="flex items-center justify-center gap-4 text-xs text-white/40">
-            <a href="https://smartslate.io" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors">About SmartSlate</a>
-            <a href="https://app.smartslate.io/portal" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors">Create Profile</a>
-            <a href="#" className="hover:text-white/60 transition-colors">Privacy</a>
-          </div>
-        </footer>
+        {/* Footer */}
+        <div className="relative z-10 mt-12">
+          <Footer />
+        </div>
           </main>
         </div>
       </div>

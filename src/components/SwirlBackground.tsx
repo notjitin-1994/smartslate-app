@@ -1,3 +1,5 @@
+'use client';
+
 import { memo, useEffect, useMemo, useState } from 'react';
 
 type Tier = 'mobile' | 'tablet' | 'desktop' | 'ultra';
@@ -41,6 +43,7 @@ const SwirlBackground = memo(({ className = '' }: SwirlBackgroundProps) => {
     return () => window.removeEventListener('resize', update);
   }, []);
 
+  // Ensure we render deterministic markup on the server to avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -92,6 +95,7 @@ const SwirlBackground = memo(({ className = '' }: SwirlBackgroundProps) => {
   }, [tier]);
 
   const swirls = useMemo(() => {
+    // During SSR and the very first client render, keep this empty to match markup
     if (!mounted) return [] as Swirl[];
     const placed: Swirl[] = [];
     const targetCount = pickInt(config.countMin, config.countMax);
@@ -101,12 +105,14 @@ const SwirlBackground = memo(({ className = '' }: SwirlBackgroundProps) => {
       attempts += 1;
       const sizeVw = randomBetween(config.sizeMin, config.sizeMax);
       const radius = sizeVw / 2;
+      // Keep within bounds
       const x = randomBetween(radius + 1, 100 - radius - 1);
       const y = randomBetween(radius + 1, 100 - radius - 1);
       const opacity = randomBetween(config.opacityMin, config.opacityMax);
       const rotate = randomBetween(-20, 20);
-      const z = Math.random() < 0.45 ? 0 : 1;
+      const z = Math.random() < 0.45 ? 0 : 1; // small variation in stacking
 
+      // Ensure no intersections with existing swirls (use vw-based metric across both axes)
       let intersects = false;
       for (const s of placed) {
         const dx = x - s.x;
@@ -119,6 +125,7 @@ const SwirlBackground = memo(({ className = '' }: SwirlBackgroundProps) => {
         }
       }
       if (intersects) continue;
+      // Staggering: avoid similar rows
       if (placed.some((s) => Math.abs(s.y - y) < 6 && Math.abs(s.x - x) < 12)) continue;
 
       placed.push({ id: placed.length + 1, x, y, sizeVw, opacity, rotate, z });
@@ -139,6 +146,7 @@ const SwirlBackground = memo(({ className = '' }: SwirlBackgroundProps) => {
     <div
       className={`pointer-events-none absolute inset-0 overflow-hidden select-none ${className}`}
       aria-hidden
+      suppressHydrationWarning
     >
       {swirls.map((s) => (
         <img
@@ -162,6 +170,7 @@ const SwirlBackground = memo(({ className = '' }: SwirlBackgroundProps) => {
         />
       ))}
 
+      {/* Subtle vignette without gradients */}
       <div className="absolute inset-0 bg-black/10" />
     </div>
   );

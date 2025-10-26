@@ -1,14 +1,20 @@
 import { useState, useEffect } from 'react';
-import type { IdentifierValue } from '@/features/auth/types';
-import { AuthInput } from '@/features/auth/components/AuthInput';
-import { PasswordInput } from '@/components/PasswordInput';
-import { PasswordStrength } from '@/features/auth/components/PasswordStrength';
-import { GoogleOAuthButton } from '@/features/auth/components/GoogleOAuthButton';
-import * as authService from '@/features/auth/services/authService';
+import { AuthInput } from './AuthInput';
+import { PasswordInput } from './PasswordInput';
+import { PasswordStrength } from './PasswordStrength';
+import { GoogleOAuthButton } from './GoogleOAuthButton';
+import { getSupabase } from '@/services/supabase';
+import { useNavigate } from 'react-router-dom';
+import { paths } from '@/routes/paths';
+
+type IdentifierValue = { kind: 'email'; email: string } | { kind: 'unknown'; raw: string };
 
 export function SignupFormContent() {
+  const navigate = useNavigate();
   const [identifierRaw, setIdentifierRaw] = useState('');
   const [identifier, setIdentifier] = useState<IdentifierValue>({ kind: 'unknown', raw: '' });
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,16 +28,26 @@ export function SignupFormContent() {
       setAnimatingOut(true);
       const timer = setTimeout(() => {
         setAnimatingOut(false);
-      }, 200);
+      }, 200); // Match the animation duration
       return () => clearTimeout(timer);
     }
   }, [showPasswordStrength, password]);
 
-  async function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent): Promise<void> {
     e.preventDefault();
 
     if (identifier.kind !== 'email') {
       setError('Please enter a valid email address');
+      return;
+    }
+
+    if (!firstName.trim()) {
+      setError('Please enter your first name');
+      return;
+    }
+
+    if (!lastName.trim()) {
+      setError('Please enter your last name');
       return;
     }
 
@@ -44,7 +60,40 @@ export function SignupFormContent() {
     setLoading(true);
 
     try {
-      await authService.signup({ identifier, password });
+      const supabase = getSupabase();
+
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: identifier.email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: {
+            first_name: firstName.trim(),
+            last_name: lastName.trim(),
+            full_name: `${firstName.trim()} ${lastName.trim()}`,
+          },
+        },
+      });
+
+      if (signUpError) throw signUpError;
+
+      // Update user profile if signup was successful
+      if (data.user) {
+        const { error: profileError } = await supabase.from('user_profiles').upsert({
+          user_id: data.user.id,
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
+          full_name: `${firstName.trim()} ${lastName.trim()}`,
+        });
+
+        if (profileError) {
+          console.error('Error updating user profile:', profileError);
+          // Don't throw here as the user account was created successfully
+        }
+      }
+
+      // Navigate to portal
+      navigate(paths.portal, { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign up failed');
       setLoading(false);
@@ -52,7 +101,33 @@ export function SignupFormContent() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-6">
+    <form onSubmit={onSubmit} className="animate-fade-in-up space-y-6">
+      {/* Name fields */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <label className="block text-sm text-white/70">First name</label>
+          <input
+            className="focus:ring-primary focus:border-primary w-full rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-white/40 ring-0 transition outline-none focus:ring-[1.2px]"
+            placeholder="John"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            autoComplete="given-name"
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="block text-sm text-white/70">Last name</label>
+          <input
+            className="focus:ring-primary focus:border-primary w-full rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-white/40 ring-0 transition outline-none focus:ring-[1.2px]"
+            placeholder="Doe"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            autoComplete="family-name"
+            required
+          />
+        </div>
+      </div>
+
       <AuthInput
         value={identifierRaw}
         onChange={(raw, parsed) => {
@@ -74,15 +149,16 @@ export function SignupFormContent() {
         />
         {(showPasswordStrength || animatingOut) && password && (
           <div
-            className={`transition-all duration-300 ${
-              showPasswordStrength ? 'opacity-100' : 'opacity-0'
+            className={`${
+              showPasswordStrength
+                ? 'animate-in slide-in-from-top-2 duration-300'
+                : 'animate-out fade-out slide-out-to-top-2 duration-200'
             }`}
           >
             <PasswordStrength value={password} />
           </div>
         )}
       </div>
-
       <PasswordInput
         label="Confirm password"
         value={confirm}
@@ -92,11 +168,15 @@ export function SignupFormContent() {
         name="confirm-password"
       />
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p className="text-error text-sm">{error}</p>}
 
       <button
         type="submit"
-        className="btn-primary pressable w-full rounded-xl px-4 py-3"
+        className="pressable w-full rounded-full px-6 py-3 text-white font-medium transition-all duration-200"
+        style={{
+          background: 'linear-gradient(135deg, var(--secondary-accent-light) 0%, var(--secondary-accent) 100%)',
+          boxShadow: '0 2px 8px rgba(79, 70, 229, 0.25), 0 1px 3px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+        }}
         disabled={loading}
       >
         <span className={loading ? 'animate-pulse opacity-70' : ''}>
@@ -105,7 +185,7 @@ export function SignupFormContent() {
       </button>
 
       <div className="relative py-2 text-center text-xs text-white/40">
-        <span className="text-[rgb(var(--primary))] relative z-10 rounded-sm bg-white/5 px-2">or</span>
+        <span className="text-primary relative z-10 rounded-sm bg-white/5 px-2">or</span>
         <span className="absolute top-1/2 right-0 left-0 h-px -translate-y-1/2 bg-white/10" />
       </div>
 

@@ -14,7 +14,7 @@ const IconSpark = () => (
     fill="none"
     stroke="currentColor"
     strokeWidth="1.6"
-    className="text-[rgb(var(--primary))]"
+    className="text-primary"
   >
     <path d="M12 2l2 5 5 2-5 2-2 5-2-5-5-2 5-2 2-5z" />
   </svg>
@@ -28,7 +28,7 @@ const IconChart = () => (
     fill="none"
     stroke="currentColor"
     strokeWidth="1.6"
-    className="text-[rgb(var(--secondary))]"
+    className="text-secondary"
   >
     <path d="M3 21h18" />
     <rect x="6" y="11" width="3" height="7" />
@@ -78,14 +78,15 @@ export const PolarisPerks = memo(function PolarisPerks() {
           <div
             role="listitem"
             key={p.title}
-            className="group relative overflow-hidden rounded-lg border border-white/10 bg-white/5 p-2.5 backdrop-blur-xl transition-all duration-300 hover:border-[rgb(var(--primary)/0.6)] hover:bg-white/7"
+            className="group hover:border-primary/60 relative overflow-hidden rounded-lg border border-white/10 bg-white/5 p-2.5 backdrop-blur-xl transition-all duration-300 hover:bg-white/7"
           >
+            {/* Accent gradient border (Material-esque) */}
             <span
               className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-white/5"
               aria-hidden
             />
             <span
-              className="pointer-events-none absolute -inset-px rounded-xl bg-[rgb(var(--primary)/0.1)] opacity-0 transition-opacity group-hover:opacity-100"
+              className="bg-primary/10 pointer-events-none absolute -inset-px rounded-xl opacity-0 transition-opacity group-hover:opacity-100"
               aria-hidden
             />
 
@@ -101,6 +102,7 @@ export const PolarisPerks = memo(function PolarisPerks() {
               </div>
             </div>
 
+            {/* Hover lift */}
             <style>{`.group:hover{transform:translateY(-2px)}`}</style>
           </div>
         ))}
