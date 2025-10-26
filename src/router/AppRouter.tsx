@@ -4,12 +4,12 @@ import { paths } from '@/routes/paths'
 import { RequireAuth } from './RequireAuth'
 
 // Lazy load pages for better performance
-const AuthLanding = lazy(() => import('@/pages/AuthLanding').then(m => ({ default: m.default })))
-const AuthCallback = lazy(() => import('@/pages/AuthCallback').then(m => ({ default: m.default })))
+const AuthLanding = lazy(() => import('@/pages/AuthLanding'))
+const AuthCallback = lazy(() => import('@/pages/AuthCallback'))
 const PortalPage = lazy(() => import('@/pages/PortalPage').then(m => ({ default: m.PortalPage })))
 const SettingsContent = lazy(() => import('@/portal/SettingsContent').then(m => ({ default: m.SettingsContent })))
 const PublicProfile = lazy(() => import('@/pages/PublicProfile').then(m => ({ default: m.PublicProfile })))
-const PitchDeck = lazy(() => import('@/pages/PitchDeck').then(m => ({ default: m.default })))
+const PitchDeck = lazy(() => import('@/pages/PitchDeck'))
 
 // Loading component
 function PageLoader() {
