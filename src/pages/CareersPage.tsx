@@ -45,7 +45,7 @@ const SectionContainer = styled(Container)(({ theme }) => ({
   marginBottom: theme.spacing(8),
 }));
 
-const ValueCard = styled(motion(Card))(({ theme }) => ({
+const StyledValueCard = styled(Card)(({ theme }) => ({
   height: '100%',
   background: 'rgba(255, 255, 255, 0.03)',
   backdropFilter: 'blur(10px)',
@@ -59,7 +59,9 @@ const ValueCard = styled(motion(Card))(({ theme }) => ({
   },
 }));
 
-const BenefitCard = styled(motion(Card))(({ theme }) => ({
+const ValueCard = motion.create(StyledValueCard);
+
+const StyledBenefitCard = styled(Card)(({ theme }) => ({
   height: '100%',
   background: 'rgba(255, 255, 255, 0.03)',
   backdropFilter: 'blur(10px)',
@@ -71,6 +73,8 @@ const BenefitCard = styled(motion(Card))(({ theme }) => ({
     boxShadow: `0 4px 16px rgba(167, 218, 219, 0.12)`,
   },
 }));
+
+const BenefitCard = motion.create(StyledBenefitCard);
 
 const JobCard = styled(Accordion)(({ theme }) => ({
   background: 'rgba(255, 255, 255, 0.03)',

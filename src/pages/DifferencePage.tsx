@@ -23,7 +23,7 @@ const Section = styled(Box)(({ theme }) => ({
   },
 }));
 
-const ComparisonCard = styled(motion.div)(({ theme }) => ({
+const StyledComparisonCard = styled(Box)(({ theme }) => ({
   background: 'rgba(255, 255, 255, 0.03)',
   backdropFilter: 'blur(20px)',
   border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -41,7 +41,9 @@ const ComparisonCard = styled(motion.div)(({ theme }) => ({
   },
 }));
 
-const FeatureCard = styled(motion.div)(({ theme }) => ({
+const ComparisonCard = motion.create(StyledComparisonCard);
+
+const StyledFeatureCard = styled(Box)(({ theme }) => ({
   background: 'rgba(255, 255, 255, 0.03)',
   backdropFilter: 'blur(20px)',
   border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -60,6 +62,8 @@ const FeatureCard = styled(motion.div)(({ theme }) => ({
     padding: theme.spacing(3),
   },
 }));
+
+const FeatureCard = motion.create(StyledFeatureCard);
 
 const IconWrapper = styled(Box)(() => ({
   width: '64px',
@@ -95,7 +99,7 @@ const CTABox = styled(Box)(({ theme }) => ({
   },
 }));
 
-const CTAButton = styled(motion.button)(() => ({
+const StyledCTAButton = styled('button')(() => ({
   background: 'linear-gradient(135deg, #5b4ff7 0%, #4f46e5 100%)',
   color: '#ffffff',
   border: 'none',
@@ -111,6 +115,8 @@ const CTAButton = styled(motion.button)(() => ({
     boxShadow: '0 8px 24px rgba(79, 70, 229, 0.4)',
   },
 }));
+
+const CTAButton = motion.create(StyledCTAButton);
 
 const VsIndicator = styled(Box)(({ theme }) => ({
   display: 'flex',

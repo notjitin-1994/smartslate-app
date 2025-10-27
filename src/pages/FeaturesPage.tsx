@@ -42,7 +42,7 @@ const Section = styled(Box)(({ theme }) => ({
   },
 }));
 
-const StatCard = styled(motion.div)(({ theme }) => ({
+const StyledStatCard = styled(Box)(({ theme }) => ({
   background: 'rgba(255, 255, 255, 0.03)',
   backdropFilter: 'blur(20px)',
   border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -58,7 +58,9 @@ const StatCard = styled(motion.div)(({ theme }) => ({
   },
 }));
 
-const ProductCard = styled(motion.div)(({ theme }) => ({
+const StatCard = motion.create(StyledStatCard);
+
+const StyledProductCard = styled(Box)(({ theme }) => ({
   background: 'rgba(255, 255, 255, 0.03)',
   backdropFilter: 'blur(20px)',
   border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -76,7 +78,9 @@ const ProductCard = styled(motion.div)(({ theme }) => ({
   },
 }));
 
-const FeatureCard = styled(motion.div)(({ theme }) => ({
+const ProductCard = motion.create(StyledProductCard);
+
+const StyledFeatureCard = styled(Box)(({ theme }) => ({
   background: 'rgba(255, 255, 255, 0.03)',
   backdropFilter: 'blur(20px)',
   border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -93,7 +97,9 @@ const FeatureCard = styled(motion.div)(({ theme }) => ({
   },
 }));
 
-const MetricCard = styled(motion.div)(({ theme }) => ({
+const FeatureCard = motion.create(StyledFeatureCard);
+
+const StyledMetricCard = styled(Box)(({ theme }) => ({
   background: 'linear-gradient(135deg, rgba(167, 218, 219, 0.08) 0%, rgba(79, 70, 229, 0.08) 100%)',
   backdropFilter: 'blur(20px)',
   border: '1px solid rgba(167, 218, 219, 0.2)',
@@ -107,6 +113,8 @@ const MetricCard = styled(motion.div)(({ theme }) => ({
     boxShadow: '0 12px 40px rgba(167, 218, 219, 0.2)',
   },
 }));
+
+const MetricCard = motion.create(StyledMetricCard);
 
 const IconWrapper = styled(Box)(() => ({
   width: '64px',
@@ -145,7 +153,7 @@ const CTABox = styled(Box)(({ theme }) => ({
   },
 }));
 
-const CTAButton = styled(motion.button)(() => ({
+const StyledCTAButton = styled('button')(() => ({
   background: 'linear-gradient(135deg, #5b4ff7 0%, #4f46e5 100%)',
   color: '#ffffff',
   border: 'none',
@@ -161,6 +169,8 @@ const CTAButton = styled(motion.button)(() => ({
     boxShadow: '0 8px 24px rgba(79, 70, 229, 0.4)',
   },
 }));
+
+const CTAButton = motion.create(StyledCTAButton);
 
 const StatusBadge = styled(Chip)<{ status: 'live' | 'coming-soon' }>(({ status }) => ({
   position: 'absolute',
