@@ -23,7 +23,7 @@ const Section = styled(Box)(({ theme }) => ({
   },
 }));
 
-const StyledComparisonCard = styled(Box)(({ theme }) => ({
+const ComparisonCard = styled(Box)(({ theme }) => ({
   background: 'rgba(255, 255, 255, 0.03)',
   backdropFilter: 'blur(20px)',
   border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -41,9 +41,7 @@ const StyledComparisonCard = styled(Box)(({ theme }) => ({
   },
 }));
 
-const ComparisonCard = motion.create(StyledComparisonCard);
-
-const StyledFeatureCard = styled(Box)(({ theme }) => ({
+const FeatureCard = styled(Box)(({ theme }) => ({
   background: 'rgba(255, 255, 255, 0.03)',
   backdropFilter: 'blur(20px)',
   border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -62,8 +60,6 @@ const StyledFeatureCard = styled(Box)(({ theme }) => ({
     padding: theme.spacing(3),
   },
 }));
-
-const FeatureCard = motion.create(StyledFeatureCard);
 
 const IconWrapper = styled(Box)(() => ({
   width: '64px',
@@ -99,7 +95,7 @@ const CTABox = styled(Box)(({ theme }) => ({
   },
 }));
 
-const StyledCTAButton = styled('button')(() => ({
+const CTAButton = styled('button')(() => ({
   background: 'linear-gradient(135deg, #5b4ff7 0%, #4f46e5 100%)',
   color: '#ffffff',
   border: 'none',
@@ -115,8 +111,6 @@ const StyledCTAButton = styled('button')(() => ({
     boxShadow: '0 8px 24px rgba(79, 70, 229, 0.4)',
   },
 }));
-
-const CTAButton = motion.create(StyledCTAButton);
 
 const VsIndicator = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -306,35 +300,37 @@ export default function DifferencePage() {
                   <Grid container spacing={3} alignItems="center">
                     {/* Traditional */}
                     <Grid size={{ xs: 12, md: 5 }}>
-                      <ComparisonCard
+                      <motion.div
                         whileHover={{ scale: 1.02 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <Box sx={{ textAlign: 'center', opacity: 0.7 }}>
-                          <Typography sx={{ fontSize: '3rem', mb: 2 }}>
-                            {comparison.traditional.icon}
-                          </Typography>
-                          <Typography
-                            variant="h5"
-                            sx={{
-                              fontWeight: 700,
-                              mb: 1.5,
-                              color: 'rgba(255, 255, 255, 0.8)',
-                            }}
-                          >
-                            {comparison.traditional.title}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              color: 'rgba(255, 255, 255, 0.6)',
-                              lineHeight: 1.7,
-                            }}
-                          >
-                            {comparison.traditional.description}
-                          </Typography>
-                        </Box>
-                      </ComparisonCard>
+                        <ComparisonCard>
+                          <Box sx={{ textAlign: 'center', opacity: 0.7 }}>
+                            <Typography sx={{ fontSize: '3rem', mb: 2 }}>
+                              {comparison.traditional.icon}
+                            </Typography>
+                            <Typography
+                              variant="h5"
+                              sx={{
+                                fontWeight: 700,
+                                mb: 1.5,
+                                color: 'rgba(255, 255, 255, 0.8)',
+                              }}
+                            >
+                              {comparison.traditional.title}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: 'rgba(255, 255, 255, 0.6)',
+                                lineHeight: 1.7,
+                              }}
+                            >
+                              {comparison.traditional.description}
+                            </Typography>
+                          </Box>
+                        </ComparisonCard>
+                      </motion.div>
                     </Grid>
 
                     {/* VS Indicator */}
@@ -344,15 +340,17 @@ export default function DifferencePage() {
 
                     {/* Smartslate */}
                     <Grid size={{ xs: 12, md: 5 }}>
-                      <ComparisonCard
+                      <motion.div
                         whileHover={{ scale: 1.02 }}
                         transition={{ duration: 0.2 }}
-                        style={{
-                          background: 'linear-gradient(135deg, rgba(167, 218, 219, 0.08) 0%, rgba(79, 70, 229, 0.08) 100%)',
-                          border: '1px solid rgba(167, 218, 219, 0.3)',
-                        }}
                       >
-                        <Box sx={{ textAlign: 'center' }}>
+                        <ComparisonCard
+                          style={{
+                            background: 'linear-gradient(135deg, rgba(167, 218, 219, 0.08) 0%, rgba(79, 70, 229, 0.08) 100%)',
+                            border: '1px solid rgba(167, 218, 219, 0.3)',
+                          }}
+                        >
+                          <Box sx={{ textAlign: 'center' }}>
                           <Typography sx={{ fontSize: '3rem', mb: 2 }}>
                             {comparison.smartslate.icon}
                           </Typography>
@@ -377,6 +375,7 @@ export default function DifferencePage() {
                           </Typography>
                         </Box>
                       </ComparisonCard>
+                      </motion.div>
                     </Grid>
                   </Grid>
                 </motion.div>
@@ -423,34 +422,36 @@ export default function DifferencePage() {
             <Grid container spacing={4}>
               {differentiators.map((item, index) => (
                 <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
-                  <FeatureCard
+                  <motion.div
                     custom={index}
                     variants={fadeInUp}
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <IconWrapper>{item.icon}</IconWrapper>
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        fontWeight: 700,
-                        mb: 2,
-                        color: '#ffffff',
-                      }}
-                    >
-                      {item.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: 'rgba(255, 255, 255, 0.7)',
-                        lineHeight: 1.7,
-                        flexGrow: 1,
-                      }}
-                    >
-                      {item.description}
-                    </Typography>
-                  </FeatureCard>
+                    <FeatureCard>
+                      <IconWrapper>{item.icon}</IconWrapper>
+                      <Typography
+                        variant="h5"
+                        sx={{
+                          fontWeight: 700,
+                          mb: 2,
+                          color: '#ffffff',
+                        }}
+                      >
+                        {item.title}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: 'rgba(255, 255, 255, 0.7)',
+                          lineHeight: 1.7,
+                          flexGrow: 1,
+                        }}
+                      >
+                        {item.description}
+                      </Typography>
+                    </FeatureCard>
+                  </motion.div>
                 </Grid>
               ))}
             </Grid>
@@ -580,25 +581,23 @@ export default function DifferencePage() {
                 their learning experience with Smartslate
               </Typography>
               <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-                <CTAButton
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => window.location.href = '/auth'}
-                >
-                  Get Started Free
-                </CTAButton>
-                <CTAButton
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => window.location.href = '/contact'}
-                  style={{
-                    background: 'transparent',
-                    border: '2px solid #a7dadb',
-                    color: '#a7dadb',
-                  }}
-                >
-                  Schedule a Demo
-                </CTAButton>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <CTAButton onClick={() => window.location.href = '/auth'}>
+                    Get Started Free
+                  </CTAButton>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <CTAButton
+                    onClick={() => window.location.href = '/contact'}
+                    style={{
+                      background: 'transparent',
+                      border: '2px solid #a7dadb',
+                      color: '#a7dadb',
+                    }}
+                  >
+                    Schedule a Demo
+                  </CTAButton>
+                </motion.div>
               </Box>
             </CTABox>
           </motion.div>

@@ -30,9 +30,18 @@ export default defineConfig({
             if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
               return 'react-vendor'
             }
-            // MUI libraries
-            if (id.includes('@mui') || id.includes('@emotion')) {
+            // CRITICAL: Separate Emotion from MUI to fix initialization order
+            // Emotion core must load before MUI styled components
+            if (id.includes('@emotion')) {
+              return 'emotion-vendor'
+            }
+            // MUI libraries (after Emotion)
+            if (id.includes('@mui')) {
               return 'mui-vendor'
+            }
+            // Framer Motion in its own chunk
+            if (id.includes('framer-motion')) {
+              return 'motion-vendor'
             }
             // All other vendor libraries
             return 'vendor'

@@ -45,7 +45,7 @@ const SectionContainer = styled(Container)(({ theme }) => ({
   marginBottom: theme.spacing(8),
 }));
 
-const StyledValueCard = styled(Card)(({ theme }) => ({
+const ValueCard = styled(Card)(({ theme }) => ({
   height: '100%',
   background: 'rgba(255, 255, 255, 0.03)',
   backdropFilter: 'blur(10px)',
@@ -59,9 +59,7 @@ const StyledValueCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const ValueCard = motion.create(StyledValueCard);
-
-const StyledBenefitCard = styled(Card)(({ theme }) => ({
+const BenefitCard = styled(Card)(({ theme }) => ({
   height: '100%',
   background: 'rgba(255, 255, 255, 0.03)',
   backdropFilter: 'blur(10px)',
@@ -73,8 +71,6 @@ const StyledBenefitCard = styled(Card)(({ theme }) => ({
     boxShadow: `0 4px 16px rgba(167, 218, 219, 0.12)`,
   },
 }));
-
-const BenefitCard = motion.create(StyledBenefitCard);
 
 const JobCard = styled(Accordion)(({ theme }) => ({
   background: 'rgba(255, 255, 255, 0.03)',
@@ -370,29 +366,31 @@ export default function CareersPage() {
           <Grid container spacing={3}>
             {values.map((value, index) => (
               <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
-                <ValueCard variants={itemVariants}>
-                  <CardContent sx={{ p: 3 }}>
-                    <IconWrapper>{value.icon}</IconWrapper>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: 600,
-                        mb: 1.5,
-                      }}
-                    >
-                      {value.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: 'text.secondary',
-                        lineHeight: 1.7,
-                      }}
-                    >
-                      {value.description}
-                    </Typography>
-                  </CardContent>
-                </ValueCard>
+                <motion.div variants={itemVariants}>
+                  <ValueCard>
+                    <CardContent sx={{ p: 3 }}>
+                      <IconWrapper>{value.icon}</IconWrapper>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          fontWeight: 600,
+                          mb: 1.5,
+                        }}
+                      >
+                        {value.title}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: 'text.secondary',
+                          lineHeight: 1.7,
+                        }}
+                      >
+                        {value.description}
+                      </Typography>
+                    </CardContent>
+                  </ValueCard>
+                </motion.div>
               </Grid>
             ))}
           </Grid>
@@ -434,30 +432,32 @@ export default function CareersPage() {
           <Grid container spacing={3}>
             {benefits.map((benefit, index) => (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
-                <BenefitCard variants={itemVariants}>
-                  <CardContent sx={{ p: 3 }}>
-                    <Box sx={{ mb: 2 }}>{benefit.icon}</Box>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: 600,
-                        mb: 1,
-                        fontSize: '1rem',
-                      }}
-                    >
-                      {benefit.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: 'text.secondary',
-                        lineHeight: 1.6,
-                      }}
-                    >
-                      {benefit.description}
-                    </Typography>
-                  </CardContent>
-                </BenefitCard>
+                <motion.div variants={itemVariants}>
+                  <BenefitCard>
+                    <CardContent sx={{ p: 3 }}>
+                      <Box sx={{ mb: 2 }}>{benefit.icon}</Box>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          fontWeight: 600,
+                          mb: 1,
+                          fontSize: '1rem',
+                        }}
+                      >
+                        {benefit.title}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: 'text.secondary',
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        {benefit.description}
+                      </Typography>
+                    </CardContent>
+                  </BenefitCard>
+                </motion.div>
               </Grid>
             ))}
           </Grid>
